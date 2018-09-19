@@ -195,24 +195,6 @@ results <- bind_rows(purrr::map(training_set_ls, add_matching_vars))
 write_csv(results, "training_prelim_v1_1_full.csv")
 
 
-####### 
-# code below is being temporarily copied from other scripts to be edited here
-
-
-library(foreach)
-library(doParallel)
-
-#setup parallel backend to use many processors
-cores=detectCores()
-cl <- makeCluster(cores[1]-1) #not to overload your computer
-registerDoParallel(cl)
-
-results <- foreach(x = ls, .combine = "rbind", .packages = c("sp","rgeos","spatstat","raster")) %dopar% {
-  get_seg_results(x[1], x[2], x[3])
-}
-#stop cluster
-stopCluster(cl)
-
 
 
 

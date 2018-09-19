@@ -2,52 +2,61 @@
 # returns one row data frame of indicators to be combined with input row
 compare_hh_rosters <- function(row){
   
+  for_rosters$age <- recode(for_rosters$age, 
+                      `90 (90+ in 1980 and 1990)` = "90",
+                      `100 (100+ in 1960-1970)` = "100",
+                      `112 (112+ in the 1980 internal data)` = "112",
+                      `Less than 1 year old` = "0") %>% as.numeric()
+
   # grab houshold rosters
   # must remove those younger than 11 from time 2, plus household head being linked
-  roster_focal <- filter(phl40, serial40 == row$serial40 &
-                           age40 > 10 & 
-                           pernum40 != row$pernum40)
+  roster_focal <- filter(for_rosters, serial == row$serial2 &
+                           age > 10 & 
+                           pernum != row$pernum2)
+  names(roster_focal) <- paste0(names(roster_focal), "2")
   
-  roster_comp <- filter(phl30, serial30 == row$serial30 &
-                          pernum30 != row$pernum30)
+  roster_comp <- filter(for_rosters, serial == row$serial1 &
+                          pernum != row$pernum1)
+  names(roster_comp) <- paste0(names(roster_comp), "1")
   
   if(nrow(roster_focal) > 0 & nrow(roster_comp) > 0){
     # Do comparison
     combo <- all_row_combos(roster_focal, roster_comp) 
-    combo <-  mutate(combo, jw_frst = jarowinkler(namefrst40, namefrst30),
-                     jw_last = jarowinkler(namelast40, namelast30))
+    combo <-  mutate(combo, 
+                     jw_frst = jarowinkler(namefrst2, namefrst1),
+                     jw_last = jarowinkler(namelast2, namelast1))
     
     # create weak and strong match columns
     # only use "relate" for matching if hh head is also head in time 1
     
     # You should relax these rule in general
-    if(row$relate30 == 101){
-      combo <- mutate(combo, fuzzy_match = if_else(jw_frst > 0.6 &
+    #if(row$relate1 == "Head/householder"){
+    combo <- mutate(combo, fuzzy_match = if_else(jw_frst > 0.6 &
                                                      jw_last > 0.8 &
-                                                     byear40 >= byear30 - 2 &
-                                                     byear40 <= byear30 + 2 &
-                                                     bpl40 == bpl30 &
-                                                     #relate40 == relate30 & # relate var can be messy
-                                                     sex40 == sex30, 1, 0),
+                                                     age2 <= age1 + 8 &
+                                                     age2 <= age1 + 12 &
+                                                     bpl2 == bpl1 &
+                                                     #relate2 == relate1 & # relate var can be messy
+                                                     sex2 == sex1, 1, 0),
                       exact_match = if_else(jw_frst == 1 &
                                               jw_last == 1 &
-                                              byear40 == byear30 &
-                                              bpl40 == bpl30 &
-                                              #relate40 == relate30 &   # relate var can be messy
-                                              sex40 == sex30, 1, 0))
-    } else {
-      combo <- mutate(combo, fuzzy_match = if_else(jw_frst > 0.8 &
-                                                     jw_last > 0.8 &
-                                                     byear40 >= byear30 - 2 &
-                                                     byear40 <= byear30 + 2 &
-                                                     bpl40 == bpl30 &
-                                                     sex40 == sex30, 1, 0),
-                      exact_match = if_else(jw_frst == 1 &
-                                              jw_last == 1 &
-                                              byear40 == byear30 &
-                                              bpl40 == bpl30 &
-                                              sex40 == sex30, 1, 0))
-    }
+                                              age2 == age1 &
+                                              bpl2 == bpl1 &
+                                              #relate2 == relate1 &   # relate var can be messy
+                                              sex2 == sex1, 1, 0))
+    #} else {
+    #  combo <- mutate(combo, fuzzy_match = if_else(jw_frst > 0.8 &
+    #                                                 jw_last > 0.8 &
+    #                                                 age2 >= age1 - 2 &
+    #                                                 age2 <= age1 + 2 &
+    #                                                 bpl2 == bpl1 &
+    #                                                 sex2 == sex1, 1, 0),
+    #                  exact_match = if_else(jw_frst == 1 &
+    #                                          jw_last == 1 &
+    #                                          age2 == age1 &
+    #                                          bpl2 == bpl1 &
+    #                                          sex2 == sex1, 1, 0))
+    #}
     # compute indicators for potential match
     ### need to add indicators to scale probability based on number of choices
     ### This could also happen in the automated algorithm that repeats to maximize matches based on past decisions
