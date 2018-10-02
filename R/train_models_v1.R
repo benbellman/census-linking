@@ -3,21 +3,6 @@ library(here)
 library(caret)
 library(caTools)
 
-# load functions for calculating matching variables
-source(here("R", "functions", "add_matching_vars.R"))
-source(here("R", "functions", "compare_hh_rosters.R"))
-source(here("R", "functions", "load_training_data.R"))
-source(here("R", "functions", "unabbv_names.R"))
-
-### combine all coded training data files
-
-# first, load file containing household members of training cases
-for_rosters <- read_csv(here("data", "for_rosters.csv")) 
-
-# add newly coded training files
-#full_data <- load_training_data(here("data", "Training"))
-#write_csv(full_data, here("data", "training_all_vars_v1.csv"))
-
 # load pre-preprocessed data
 full_data <- read_csv(here("data", "training_all_vars_v1.csv"))
 
