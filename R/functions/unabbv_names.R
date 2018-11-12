@@ -1,3 +1,5 @@
+library(stringr)
+
 # changes some male first names from abbreviations to the full name for comparison
 # Middle initials shoudld already be placed in their own column
 # text should be all upper case

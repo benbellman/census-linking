@@ -1,4 +1,4 @@
-add_matching_vars <- function(rows){
+add_matching_vars <- function(rows, predict = F){
   
   ## Calculate all of Feigenbaum's (2016) indicators
   rows <- dplyr::mutate(rows,
@@ -26,8 +26,8 @@ add_matching_vars <- function(rows){
                         #                         is.na(mi2) == F &
                         #                         is.na(mi1) == F, 1, 0),
                         # check for exact matches within potential matches for focal record
-                        exact_mult = if_else(sum(exact) > 0, 1, 0),
-                        exact_mult = if_else(sum(exact) > 0, 1, 0),
+                        #exact_mult = if_else(sum(exact) > 0, 1, 0),
+                        #exact_mult = if_else(sum(exact) > 0, 1, 0),
                         # create soundex codes
                         soundex_f1 = soundex(namefrst1),
                         soundex_f2 = soundex(namefrst2),
@@ -43,5 +43,9 @@ add_matching_vars <- function(rows){
   
   ## Create new variables for household indicators
   # see code for comparison function below
-  bind_rows(purrr::map(split(rows, row.names(rows)), compare_hh_rosters))
+  if (predict == T){
+    bind_rows(purrr::map(split(rows, row.names(rows)), compare_hh_rosters))
+  } else {
+    bind_rows(purrr::map(split(rows, row.names(rows)), compare_hh_rosters, predict = F))
+  }
 }

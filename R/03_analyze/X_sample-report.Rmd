@@ -1,0 +1,49 @@
+---
+title: "Linked Philadelphia Sample Report"
+author: "Ben Bellman"
+date: "11/3/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r setup_data, echo=FALSE}
+library(dplyr)
+library(rio)
+library(here)
+library(sf)
+
+for(a in list.files(here("R", "functions"), full.names = T)){
+  source(a)
+}
+
+t1 <- 30
+t2 <- t1 + 10
+
+linked <- import(here("data", "linked", paste0("linked_", t1, "_", t2, ".csv"))) %>% as_tibble()
+
+# get ED data
+ed1_data <- aggregate_microdata(t1, enumdist) %>% rename(ED = enumdist)
+ed2_data <- aggregate_microdata(t2, enumdist) %>% rename(ED = enumdist)
+
+# load 1910 and 1920 ED polyogons
+ed1_poly <- st_read(here("data", "shertzer_eds", paste0("Philadelphia_19", t1, ".shp")))
+ed2_poly <- st_read(here("data", "shertzer_eds", paste0("Philadelphia_19", t2, ".shp")))
+
+# merge together
+ed1 <- merge(ed1_poly, ed1_data)
+ed2 <- merge(ed2_poly, ed2_data)
+```
+
+## This is a test
+
+A what?
+
+```{r map}
+tm_shape(ed1) +
+  tm_polygons("pct_black", border.alpha = 0)
+```
+
+A test.

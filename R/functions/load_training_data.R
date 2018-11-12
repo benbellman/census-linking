@@ -25,8 +25,10 @@ load_training_data <- function(dir){
       # replace missing name cells with empty strings
       namefrst1 = if_else(is.na(namefrst1), "", namefrst1),
       namefrst2 = if_else(is.na(namefrst2), "", namefrst2),
+      namelast1 = if_else(is.na(namelast1), "", namelast1),
+      namelast2 = if_else(is.na(namelast2), "", namelast2),
       
-      # replace name abbrevaitions
+      # replace first name abbrevaitions
       namefrst1 = unabbv_names(namefrst1),
       namefrst2 = unabbv_names(namefrst2),
       
@@ -41,12 +43,8 @@ load_training_data <- function(dir){
       
       # re-calculate last name JW score
       jw_last = jarowinkler(namelast1, namelast2)
-      
-      # Still need to retool the functions:
-      # add_matching_vars()
-      # compare_hh_rosters()
     ) %>% 
     split(.$serial2) %>% 
-    map(add_matching_vars) %>% 
+    map(add_matching_vars, predict = F) %>% 
     bind_rows()
 }
