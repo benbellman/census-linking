@@ -13,7 +13,8 @@ for(a in list.files(here("R", "functions"), full.names = T)){
 
 
 #for(a in c(10, 20, 30)){
-for(a in c(20, 30)){
+#for(a in c(20, 30)){
+for(a in c(20)){
 
 # set years of data to use
 t1 <- a

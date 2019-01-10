@@ -31,6 +31,34 @@ get_match <- function(block, model, b1, b2){
   }
 }
 
+
+
+get_match_grid_search <- function(b1, b2, block, model){
+  # instructions for more than one possible match
+  if(nrow(block) > 1){
+    # predict probabilities of match
+    block$match_prob <- predict(model, block, type = "prob")$Yes
+    
+    # set the best and second-best match scores
+    best_prob <- sort(block$match_prob, decreasing = T)[1]
+    next_best_prob <- sort(block$match_prob, decreasing = T)[2]
+    
+    # define match
+    block %>% 
+      mutate(auto_match = if_else(match_prob == best_prob &
+                                    match_prob > b1 &
+                                    best_prob / next_best_prob > b2, 1, 0))
+    # instructions if only one possible match
+  } else {
+    # predict probabilities of match
+    block$match_prob <- predict(model, block, type = "prob")$Yes
+    # define match
+    block %>% 
+      mutate(auto_match = if_else(match_prob > b1, 1, 0))
+  }
+}
+
+
 # function to wrap around full dataset
 #define_matches <- function(b1, b2, data, model, cores = 3){
 #  blocked <- data %>%

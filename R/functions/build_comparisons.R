@@ -2,9 +2,8 @@ library(dplyr)
 library(RecordLinkage)
 
 # create a block of potential matches for a single focal record (household head in t2)
-build_comparisons <- function(focal_record){
+build_comparisons <- function(focal_record, no_hh = F){
   
-  # focal_record <- m2[1000,]
   # define thresholds for record being considered
   byearmin <- focal_record$byear2 - 2
   byearmax <- focal_record$byear2 + 2
@@ -23,11 +22,17 @@ build_comparisons <- function(focal_record){
     arrange(desc(jw_frst), desc(jw_last))
   
   if(nrow(block) > 0){
-    cbind(focal_record, block) %>% 
-      # create matching variables for prediction
-      add_matching_vars(predict = T)
+    if(no_hh == T){
+      cbind(focal_record, block) %>% 
+        # create matching variables for prediction
+        add_matching_vars(predict = T, no_hh = T)
+    } else {}
+      cbind(focal_record, block) %>% 
+        # create matching variables for prediction
+        add_matching_vars(predict = T)
   } else {
     NA 
   }
 }
+
 

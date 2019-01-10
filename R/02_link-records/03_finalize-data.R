@@ -2,9 +2,7 @@ library(dplyr)
 library(rio)
 library(here)
 
-for(a in list.files(here("R", "functions"), full.names = T)){
-  source(a)
-}
+source(here("R", "functions", "load_linked_sample.R"))
 
 #for(a in c(10, 20, 30)){
 for(a in c(20, 30)){
@@ -21,5 +19,7 @@ export(cw, here("data", "crosswalks", paste0("crosswalk_", t1, "_", t2, ".csv"))
 linked <- load_linked_sample(t1, t2)
 
 export(linked, here("data", "linked", paste0("linked_", t1, "_", t2, ".csv")))
+
+rm(cw, linked)
 
 }

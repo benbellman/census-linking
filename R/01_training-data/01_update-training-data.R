@@ -7,9 +7,18 @@ library(tidyverse)
 library(here)
 
 # load functions for calculating matching variables
-for(a in list.files(here("R", "functions"), full.names = T)){
-  source(a)
-}
+#for(a in list.files(here("R", "functions"), full.names = T)){
+#  source(a)
+#}
+
+source(here("R", "functions", "load_training_data.R"))
+source(here("R", "functions", "build_comparisons.R"))
+source(here("R", "functions", "add_matching_vars.R"))
+source(here("R", "functions", "prepare_city.R"))
+source(here("R", "functions", "unabbv_names.R"))
+source(here("R", "functions", "compare_hh_rosters.R"))
+source(here("R", "functions", "all_row_combos.R"))
+source(here("R", "functions", "relate_pt.R"))
 
 # load file containing household members of training cases
 for_rosters <- read_csv(here("data", "for_rosters.csv")) %>% 

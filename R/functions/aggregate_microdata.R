@@ -11,7 +11,7 @@ aggregate_microdata <- function(m, unit){
   # Make vector of USA birthplaces
   
   
-  test <- load_microdata(m) %>% 
+  test <- load_microdata(m, formatted = F) %>% 
   # create dummy chars for different categories/groups (race, sex, age, occ/ind, married)
   mutate(
     # race
@@ -36,23 +36,27 @@ aggregate_microdata <- function(m, unit){
     age_60_64 = if_else(between(age, 60, 64), 1, 0),
     age_65_69 = if_else(between(age, 65, 69), 1, 0),
     age_70_74 = if_else(between(age, 70, 74), 1, 0),
-    age_75_up = if_else(age > 74, 1, 0)
+    age_75_up = if_else(age > 74, 1, 0),
     # nativity
-    #frn_brn = if_else()
+    frnbrn = if_else(nativity == 5, 1, 0)
   ) %>% 
-  group_by(!!unit) %>% 
-  #group_by(enumdist) %>% 
+  group_by(!!unit, year) %>% 
   summarise(
     total_pop = n(),
     n_white = sum(white),
     n_black = sum(black),
     n_under_15 = sum(age_0_4) + sum(age_5_9) + sum(age_10_14),
     n_over_64 = sum(age_65_69) + sum(age_70_74) + sum(age_75_up),
+    n_frnbrn = sum(frnbrn),
     pct_white = n_white / total_pop * 100,
     pct_black = n_black / total_pop * 100,
     pct_under_15 = n_under_15 / total_pop * 100,
     pct_over_64 = n_over_64 / total_pop * 100,
-    #mean_sei = mean(sei),
+    pct_frnbrn = n_frnbrn / total_pop * 100,
+    mean_sei = mean(sei, na.rm = T),
+    mean_edscor = mean(edscor50, na.rm = T),
+    mean_erscor = mean(erscor50, na.rm = T),
     mean_age = mean(age)
-  )
+  ) %>% 
+  ungroup()
 }

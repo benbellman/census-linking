@@ -4,12 +4,19 @@ library(here)
 library(caret)
 library(caTools)
 
-for(a in list.files(here("R", "functions"), full.names = T)){
-  source(a)
-}
+source(here("R", "functions", "build_comparisons.R"))
+source(here("R", "functions", "add_matching_vars.R"))
+source(here("R", "functions", "prepare_city.R"))
+source(here("R", "functions", "unabbv_names.R"))
+source(here("R", "functions", "compare_hh_rosters.R"))
+source(here("R", "functions", "all_row_combos.R"))
+source(here("R", "functions", "relate_pt.R"))
+source(here("R", "functions", "get_match.R"))
 
 # load pre-preprocessed data
 full_data <- import(here("data", "training_all_vars_v3.csv")) %>% 
+  mutate(mimatch = if_else(mi1 == mi2, 1, 0),
+         mimatch = if_else(is.na(mimatch), 0, mimatch)) %>% 
   as_tibble()
 
 # New problems with Parsing
@@ -36,7 +43,7 @@ train <- filter(full_data, serial2 %in% to_train)
 test <- filter(full_data, serial2 %in% to_train == F)
 
 # grab names of features in the models
-vars <- c("match", # variable to predict
+vars_mine <- c("match", # variable to predict
           # name indicators
           #"exact", 
           "exact_all", 
@@ -48,9 +55,21 @@ vars <- c("match", # variable to predict
           # indicators based on household comparisons
           "n_match", "pct_match", "hh_size_diff", "avg_jw_frst")
 
+vars_feig <- c("match", # variable to predict
+          # name indicators
+          "exact", 
+          "exact_all", "exact_mult",
+          "f_start", "l_start", "f_end", "l_end",
+          "jw_frst", "jw_last", 
+          "fsoundex", "lsoundex", "mimatch",
+          # indicators based on other potential matches
+          "hits", "hits2", "ydiff")
+
 # keep only match outcome and predictors
-train_vars <- train[,vars]
-test_vars <- test[,vars]
+train_mine <- train[,vars_mine]
+test_mine <- test[,vars_mine]
+train_feig <- train[,vars_feig]
+test_feig <- test[,vars_feig]
 
 ### Train a probit model with 10-fold cross-valiation
 set.seed(123)
@@ -65,9 +84,9 @@ fitControl <- trainControl(
 )
 
 # Train a model
-glm1 <- train(
+glm_mine <- train(
   match ~ .,
-  data = train_vars,
+  data = train_mine,
   method = "glm",
   family = binomial,
   trControl = fitControl
@@ -76,12 +95,26 @@ glm1 <- train(
   #preProc = c("center", "scale")
 )
 
-glm1
+glm_feig <- train(
+  match ~ .,
+  data = train_feig,
+  method = "glm",
+  family = binomial,
+  trControl = fitControl
+  ## Center and scale the predictors for the training
+  ## set and all future samples.
+  #preProc = c("center", "scale")
+)
+
+print(glm_mine)
+print(glm_feig)
+
+#glm1
 
 # look at specific objects within the model object
 #names(glm1)
 #str(glm1$finalModel)
-glm1$finalModel$coefficients
+#glm1$finalModel$coefficients
 
 # Define a function to apply to block of rows based on focal record
 # When applying to final links, need to make sure that records in t2 are never matched to the same record in t1
@@ -111,20 +144,20 @@ glm1$finalModel$coefficients
 #  }
 #}
 #
-# function to wrap around full dataset
-#define_matches <- function(b1, b2, data, model){
-#  data %>%
-#    split(.$serial2) %>% 
-#    map(select, vars[-1]) %>% 
-#    map(get_match, model, b1, b2) %>% 
-#    bind_rows()
-#}
+# function to define matches in full dataset
+define_matches <- function(b1, b2, data, vars, model){
+  data %>%
+    split(.$serial2) %>% 
+    map(select, vars[-1]) %>% 
+    map(get_match, model, b1, b2) %>% 
+    bind_rows()
+}
 
 # Do a grid search to find ideal values for b1 and b2, following Feigenbaum 2016
 params <- all_row_combos(tibble(b1 = seq(0, 0.4, 0.01)),
                          tibble(b2 = seq(1, 2, 0.03125))) %>% as_tibble()
 
-param_results <- map2(params[["b1"]], params[["b2"]], define_matches, test, glm1)
+param_results <- map2(params[["b1"]], params[["b2"]], define_matches, test, vars_feig, glm1)
 
 #reattach correct matches because I overwrote them clumsily
 for(a in 1:length(param_results)){
@@ -135,13 +168,13 @@ for(a in 1:length(param_results)){
 
 get_tpr <- function(test){
   all_pos <- nrow(filter(test, true_match == "Yes"))
-  true_pos <- nrow(filter(test, match == 1 & true_match == "Yes"))
+  true_pos <- nrow(filter(test, auto_match == 1 & true_match == "Yes"))
   true_pos / all_pos
 }
 
 get_ppv <- function(test){
-  matches <- nrow(filter(test, match == 1))
-  true_pos <- nrow(filter(test, match == 1 & true_match == "Yes"))
+  matches <- nrow(filter(test, auto_match == 1))
+  true_pos <- nrow(filter(test, auto_match == 1 & true_match == "Yes"))
   true_pos / matches
 }
 
@@ -167,6 +200,31 @@ params[params$sum == max(params$sum),]
 ### Unweighted optimal parameters are:
 # b1 = 0.2
 # b2 = 1.57
+
+### For Feigenbaum:
+# b1 = 0.12
+# b2 = 1.16
+
+
+### calculating PPV and TPR for Dec methods draft
+# set of nine parameter combos used
+params <- all_row_combos(tibble(b1 = c(0.1, 0.2, 0.3)),
+                         tibble(b2 = c(1.25, 1.5, 1.75))) %>% as_tibble()
+
+param_results_mine <- map2(params[["b1"]], params[["b2"]], define_matches, test, vars_mine, glm_mine)
+param_results_feig <- map2(params[["b1"]], params[["b2"]], define_matches, test, vars_feig, glm_feig)
+
+#reattach correct matches because I overwrote them clumsily
+for(a in 1:9){
+  param_results_mine[[a]]$true_match <- test$match
+  param_results_feig[[a]]$true_match <- test$match
+}
+
+params$tpr_mine <- unlist(map(param_results_mine, get_tpr))
+params$ppv_mine <- unlist(map(param_results_mine, get_ppv))
+params$tpr_feig <- unlist(map(param_results_feig, get_tpr))
+params$ppv_feig <- unlist(map(param_results_feig, get_ppv))
+
 
 
 
