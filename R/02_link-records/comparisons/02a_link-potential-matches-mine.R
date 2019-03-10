@@ -25,6 +25,11 @@ source(here("R", "functions", "get_match.R"))
 
 # load pre-preprocessed training data
 full_data <- import(here("data", "training_all_vars_v3.csv")) %>% 
+  # add needed variables for linkage model
+  mutate(mimatch = if_else(mi1 == mi2, 1, 0),
+         mimatch = if_else(is.na(mimatch), 0, mimatch),
+         ydiff_1 = if_else(ydiff == 1, 1, 0),
+         ydiff_2 = if_else(ydiff == 2, 1, 0)) %>% 
   as_tibble()
 
 # save outcome as factor
@@ -34,14 +39,13 @@ full_data$match <- as.factor(full_data$match) %>%
 
 # grab names of features in the models
 vars <- c("match", # variable to predict
-          # name indicators
-          #"exact", 
-          "exact_all", 
+          # Feigenbaum indicators
+          "exact", "exact_mult",
+          #"exact_all", 
           "f_start", "l_start", "f_end", "l_end",
           "jw_frst", "jw_last", 
-          "fsoundex", "lsoundex",
-          # indicators based on other potential matches
-          "hits", "hits2",
+          "fsoundex", "lsoundex", "mimatch",
+          "hits", "hits2", "ydiff_1", "ydiff_2",
           # indicators based on household comparisons
           "n_match", "pct_match", "hh_size_diff", "avg_jw_frst")
 
@@ -70,7 +74,15 @@ glm2 <- train(
 
 # load potential matches
 # read in the full 10-20 data set for predicting real matches
-potential <- import(here("data", "linking_comparisons", paste0("potential-matches-mine.csv"))) %>% 
+potential <- import(here("data", "linking_comparisons", paste0("potential-matches-mine.csv"))) %>%   # add needed variables for linkage model
+  mutate(mimatch = if_else(mi1 == mi2, 1, 0),
+         mimatch = if_else(is.na(mimatch), 0, mimatch),
+         ydiff_1 = if_else(ydiff == 1, 1, 0),
+         ydiff_2 = if_else(ydiff == 2, 1, 0)) %>% 
+  # add "exact_mult" variable because it isn't there for some reason
+  group_by(serial2) %>% 
+  mutate(exact_mult = if_else(sum(exact) > 1, 1, 0)) %>% 
+  ungroup() %>% 
   as_tibble()
 
 
@@ -78,13 +90,13 @@ blocked <- potential %>%
   #filter(serial2 %in% unique(full1020$serial2)[1:100]) %>% 
   split(.$serial2) 
 
-for(b1 in c(0.1, 0.2, 0.3)){
+for(b1 in c(0.5, 0.9)){
   for(b2 in c(1.25, 1.5, 1.75)){
     
     #setup parallel backend to use many processors
     #cores <- detectCores()
-    cl <- makeCluster(32) 
-    #cl <- makeCluster(3) 
+    #cl <- makeCluster(32) 
+    cl <- makeCluster(3) 
     registerDoParallel(cl)
     
     results <- foreach(x = blocked, .combine = "rbind", .packages = c("dplyr","tibble","RecordLinkage","stringr","caret")) %dopar% {

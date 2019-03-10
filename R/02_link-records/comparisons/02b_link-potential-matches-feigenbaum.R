@@ -25,8 +25,11 @@ source(here("R", "functions", "get_match.R"))
 
 # load pre-preprocessed training data
 full_data <- import(here("data", "training_all_vars_v3.csv")) %>% 
+  # add needed variables for linkage model
   mutate(mimatch = if_else(mi1 == mi2, 1, 0),
-         mimatch = if_else(is.na(mimatch), 0, mimatch)) %>% 
+         mimatch = if_else(is.na(mimatch), 0, mimatch),
+         ydiff_1 = if_else(ydiff == 1, 1, 0),
+         ydiff_2 = if_else(ydiff == 2, 1, 0)) %>% 
   as_tibble()
 
 # save outcome as factor
@@ -34,16 +37,16 @@ full_data$match <- as.factor(full_data$match) %>%
   recode_factor(`0` = "No",
                 `1` = "Yes")
 
+
 # grab names of features in the models
 vars <- c("match", # variable to predict
-          # name indicators
-          "exact", 
-          "exact_all", "exact_mult", "exact_all_mult",
+          # Feigenbaum indicators
+          "exact", "exact_mult",
+          #"exact_all",
           "f_start", "l_start", "f_end", "l_end",
           "jw_frst", "jw_last", 
           "fsoundex", "lsoundex", "mimatch",
-          # indicators based on other potential matches
-          "hits", "hits2", "ydiff")
+          "hits", "hits2", "ydiff_1", "ydiff_2")
 
 # retrain model on full training set, name as glm2
 full_training <- full_data[vars]
@@ -71,24 +74,28 @@ glm2 <- train(
 # load potential matches
 # read in the full 10-20 data set for predicting real matches
 potential <- import(here("data", "linking_comparisons", paste0("potential-matches-feigenbaum.csv"))) %>% 
+  # add needed variables for linkage model
+  mutate(mimatch = if_else(mi1 == mi2, 1, 0),
+         mimatch = if_else(is.na(mimatch), 0, mimatch),
+         ydiff_1 = if_else(ydiff == 1, 1, 0),
+         ydiff_2 = if_else(ydiff == 2, 1, 0)) %>% 
   as_tibble()
 
 # automated math predictiong using trained probit coefficients ---
 #results <- define_matches(b1 = 0.2, b2 = 1.57, data = full1020, model = glm2, cores = 32)
 
 blocked <- potential %>% 
-  mutate(mimatch = if_else(mi1 == mi2, 1, 0),
-         mimatch = if_else(is.na(mimatch), 0, mimatch)) %>%
   #filter(serial2 %in% unique(full1020$serial2)[1:100]) %>% 
-  split(.$serial2) 
+  split(.$serial2)
 
-for(b1 in c(0.1, 0.2, 0.3)){
+
+for(b1 in c(0.5, 0.9)){   # make sure to add back 0.1, 0.2, 0.3!
   for(b2 in c(1.25, 1.5, 1.75)){
 
     #setup parallel backend to use many processors
     #cores <- detectCores()
-    cl <- makeCluster(32) 
-    #cl <- makeCluster(3) 
+    #cl <- makeCluster(32) 
+    cl <- makeCluster(3) 
     registerDoParallel(cl)
     
     results <- foreach(x = blocked, .combine = "rbind", .packages = c("dplyr","tibble","RecordLinkage","stringr","caret")) %dopar% {
@@ -109,6 +116,14 @@ for(b1 in c(0.1, 0.2, 0.3)){
     if(nrow(check_double_match) > 0){
       results[results$serial1 %in% check_double_match$serial1, "auto_match"] <- 0
     }
+    
+    ### Special step for Feigenbaum!
+    # undo any double matches in blocks where exact_all_mult == 1
+    check_exact_all_mult <- results %>% 
+      group_by(serial2) %>% 
+      summarise(total_matches = sum(exact_all_mult)) %>% 
+      filter(total_matches > 0)
+    results[results$serial2 %in% check_exact_all_mult$serial2, "auto_match"] <- 0
     
     # export file
     export(results, here("data", "linking_comparisons", paste0("potential-matches-feigenbaum-linked-", b1, "-", b2, ".csv")))

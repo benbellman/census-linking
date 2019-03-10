@@ -18,12 +18,12 @@ t2 <- t1 + 10
 
 linked <- import(here("data", "linked", paste0("linked_", t1, "_", t2, ".csv"))) %>% 
   as_tibble() %>% 
-  mutate(enumdist1 = as.character(enumdist1),
-         enumdist2 = as.character(enumdist2))
+  mutate(ed1 = as.character(ed1),
+         ed2 = as.character(ed2))
 
 # get ED data
-ed1_data <- aggregate_microdata(t1, enumdist) %>% rename(ED = enumdist) %>% mutate(ED = as.character(ED))
-ed2_data <- aggregate_microdata(t2, enumdist) %>% rename(ED = enumdist) %>% mutate(ED = as.character(ED))
+ed1_data <- aggregate_microdata(t1, ed) %>% rename(ED = ed) %>% mutate(ED = as.character(ED))
+ed2_data <- aggregate_microdata(t2, ed) %>% rename(ED = ed) %>% mutate(ED = as.character(ED))
 
 # load 1910 and 1920 ED polyogons
 ed1_poly <- st_read(here("data", "shertzer_eds", paste0("Philadelphia_19", t1, ".shp"))) %>% 
@@ -39,14 +39,14 @@ ed2 <- merge(ed2_poly, ed2_data)
 
 # calculate linkage ED variables
 ed1 <- linked %>% 
-  mutate(ED = enumdist1) %>% 
+  mutate(ED = ed1) %>% 
   group_by(ED) %>% 
   summarize(n_linked = n()) %>% 
   merge(ed1, .) %>% 
   mutate(pct_linked = n_linked / total_pop * 100)
 
 ed2 <- linked %>% 
-  mutate(ED = enumdist2) %>% 
+  mutate(ED = ed2) %>% 
   group_by(ED) %>% 
   summarize(n_linked = n()) %>% 
   merge(ed2, .) %>% 
@@ -103,13 +103,13 @@ linked <- linked %>%
 
 flows <- linked %>% 
   filter(black == 1 | white == 1) %>% 
-  group_by(enumdist1, enumdist2) %>% 
+  group_by(ed1, ed2) %>% 
   summarize(count = n()) %>% 
   ungroup()
 
 race_flows <- linked %>% 
   filter(black == 1 | white == 1) %>% 
-  group_by(enumdist1, enumdist2, black) %>% 
+  group_by(ed1, ed2, black) %>% 
   summarize(count = n()) %>% 
   ungroup()
 
@@ -122,7 +122,7 @@ ed1_cent$lat1 <- st_coordinates(ed1_cent)[,2]
 ed1_cent <- ed1_cent %>% 
   as_tibble() %>%
   select(-geometry) %>% 
-  rename(enumdist1 = ED)
+  rename(ed1 = ED)
 
 
 ed2_cent <- st_centroid(ed2_poly)
@@ -131,7 +131,7 @@ ed2_cent$lat2 <- st_coordinates(ed2_cent)[,2]
 ed2_cent <- ed2_cent %>% 
   as_tibble() %>% 
   select(-geometry) %>% 
-  rename(enumdist2 = ED)
+  rename(ed2 = ED)
 
 
 
@@ -145,13 +145,13 @@ ed2_cent <- ed2_cent %>%
 
 flows_coord <- full_join(flows, ed1_cent) %>% 
   full_join(ed2_cent) %>% 
-  group_by(enumdist1) %>% 
+  group_by(ed1) %>% 
   mutate(pct_in_ed1 = count / sum(count) * 100) %>% 
   ungroup()
 
 race_flows_coord <- full_join(race_flows, ed1_cent) %>% 
   full_join(ed2_cent) %>% 
-  group_by(enumdist1) %>% 
+  group_by(ed1) %>% 
   mutate(pct_in_ed1 = count / sum(count) * 100) %>% 
   ungroup()
 
@@ -160,7 +160,7 @@ race_flows_coord <- full_join(race_flows, ed1_cent) %>%
 create_flow_map <- function(flows_coord, ed){
   
   ed_flow <- flows_coord %>% 
-    filter(enumdist1 == ed) %>% 
+    filter(ed1 == ed) %>% 
     filter(is.na(lon2) == F & is.na(lat2) == F)
   
   bound <- tibble(lon = c(ed_flow[["lon1"]], ed_flow[["lon2"]]),
@@ -233,9 +233,14 @@ flowmap
 flow_map_by_race <- function(race_flows_coord, ed){
   
   ed_flow <- race_flows_coord %>% 
-    filter(enumdist1 == ed) %>% 
+    filter(ed1 == ed) %>% 
     filter(is.na(lon2) == F & is.na(lat2) == F) %>% 
     mutate(black = if_else(black == 1, "Black", "White"))
+  
+  origin <- race_flows_coord %>%
+    select(ed1, lon1, lat1) %>% 
+    unique() %>% 
+    filter(ed1 == ed)
   
   
   # aggregate flow data to clusters
@@ -258,7 +263,7 @@ flow_map_by_race <- function(race_flows_coord, ed){
     theme_map() +
     scale_size_manual(values = c(0.3, 0.8, 1.5)) +
     scale_color_hue(name = "") +
-    geom_sf(data = phl_border, fill = "white", col = "black", size = 0.2) +
+    geom_sf(data = phl_border, fill = "grey85", col = "black", size = 0.2) +
     #geom_segment(data = race_flow,
     #             aes(x = lon1, y = lat1, 
     #                 xend = lon2, yend = lat2, 
@@ -267,14 +272,20 @@ flow_map_by_race <- function(race_flows_coord, ed){
     #             arrow = arrow(angle = 40, length = unit(0.25, "cm"))) +
     geom_point(data = ed_flow,
                aes(x = lon2, y = lat2, color = factor(black))) +
+    geom_point(data = origin, 
+               aes(x = lon1, y = lat1)) +
     #geom_sf(data = points_plot, aes(color = factor(black))) +
     #coord_sf(crs = st_crs(phl_border), datum = NA) +
     ggtitle(paste0("Residential flows of linked records, 19", t1, " to 19", t2),
-            subtitle = paste0("ED ", ed, " in 19", t1," (", sum(race_flow$count), " total links)")) +
-    ggsave("/Users/benjaminbellman/Desktop/desparation_plot.pdf")
+            subtitle = paste0("ED ", ed, " in 19", t1," (", sum(race_flow$count), " total links)"))
 }
 
 
-flowmap2 <- flow_map_by_race(race_flows_coord, ed = 119)
+flowmap2 <- flow_map_by_race(race_flows_coord, ed = 182)
 
 flowmap2
+
+flow_map_by_race(race_flows_coord, ed = 258) +
+  ggsave("/Users/benjaminbellman/Desktop/desparation_plot5.pdf")
+
+# 119, 729, 1252, 1838, 258, 182

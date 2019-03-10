@@ -21,6 +21,10 @@ source(here("R", "functions", "relate_pt.R"))
 # Note: must adapt slightly for backwards matching
 
 
+### HEY BEN: Your fourth method should be the more flexible implementation 
+### from Abramitzky, Boustan, and Eriksson (2012 and 2014)
+
+
 # Load the comparison sample
 to_compare <- import(here("data", "linking_comparisons", "comparison_sample.csv"))
 

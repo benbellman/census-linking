@@ -62,21 +62,21 @@ to_compare <- to_compare %>%
 
 #setup parallel backend to use many processors
 #cores <- detectCores()
-#cl <- makeCluster(32)
-#registerDoParallel(cl)
+cl <- makeCluster(32)
+registerDoParallel(cl)
 
-#out1 <- foreach(x = to_compare, .combine = "rbind", .packages = c("dplyr","tibble","RecordLinkage","stringr")) %dopar% {
-#  build_comparisons(x, no_hh = F)
-#}
+out1 <- foreach(x = to_compare, .combine = "rbind", .packages = c("dplyr","tibble","RecordLinkage","stringr")) %dopar% {
+  build_comparisons(x, no_hh = F)
+}
 
 #stop cluster
-#stopCluster(cl)
+stopCluster(cl)
 
 # return rows without NA junk
-#out1 <- out1 %>% 
-#  filter(is.na(serial2) == F)
+out1 <- out1 %>% 
+  filter(is.na(serial2) == F)
 
-#export(out1, here("data", "linking_comparisons", paste0("potential-matches-mine.csv")), row.names = F)
+export(out1, here("data", "linking_comparisons", paste0("potential-matches-mine.csv")), row.names = F)
 
 
 

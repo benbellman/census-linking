@@ -2,6 +2,7 @@ library(dplyr)
 library(caret)
 library(doParallel)
 library(foreach)
+library(purrr)
 
 # Define a function to apply to block of rows based on focal record
 # When applying to final links, need to make sure that records in t2 are never matched to the same record in t1
@@ -58,6 +59,15 @@ get_match_grid_search <- function(b1, b2, block, model){
   }
 }
 
+
+# function to define matches in full dataset
+define_matches <- function(b1, b2, data, vars, model){
+  data %>%
+    split(.$serial2) %>% 
+    map(select, vars) %>% 
+    map(get_match, model, b1, b2) %>% 
+    bind_rows()
+}
 
 # function to wrap around full dataset
 #define_matches <- function(b1, b2, data, model, cores = 3){
