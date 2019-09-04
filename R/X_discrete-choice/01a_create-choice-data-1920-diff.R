@@ -30,7 +30,7 @@ hh_cols <- c("serial", "year", "age", "sei")
 #### Load Data ####
 
 # create a combined linked sample with specified vars
-linked <- here("data", "linked", "linked_30_40.csv") %>% 
+linked <- here("data", "linked", "linked_10_20.csv") %>% 
   import() %>% 
   select(ind_cols) %>% 
   mutate(ed1 = as.character(ed1),
@@ -64,7 +64,7 @@ linked <- here("data", "linked", "linked_30_40.csv") %>%
   filter(sei1 > 0 & not_hhh1 == 0 & moved == 1)
 
 # select and aggregate household level variables
-hh1 <- load_microdata(30, formatted = F) %>% 
+hh1 <- load_microdata(10, formatted = F) %>% 
   select(hh_cols) %>% 
   bind_rows() %>% 
   group_by(serial, year) %>% 
@@ -73,7 +73,7 @@ hh1 <- load_microdata(30, formatted = F) %>%
 # set names
 names(hh1) <- paste0(names(hh1), "1")
 
-hh2 <- load_microdata(40, formatted = F) %>% 
+hh2 <- load_microdata(20, formatted = F) %>% 
   select(hh_cols) %>% 
   bind_rows() %>% 
   group_by(serial, year) %>% 
@@ -83,11 +83,11 @@ hh2 <- load_microdata(40, formatted = F) %>%
 names(hh2) <- paste0(names(hh2), "2")
 
 # load aggregate data at ED level
-ed1 <- import(here("data", "ed_data", "ED_data_1930.csv")) %>% 
+ed1 <- import(here("data", "ed_data", "ED_data_1910.csv")) %>% 
   mutate(ed = as.character(ed))
 names(ed1) <- paste0(names(ed1), "1")
 
-ed2 <- import(here("data", "ed_data", "ED_data_1940.csv")) %>% 
+ed2 <- import(here("data", "ed_data", "ED_data_1920.csv")) %>% 
   mutate(ed = as.character(ed))
 names(ed2) <- paste0("dest_", names(ed2))
 
@@ -127,7 +127,7 @@ split(linked, row.names(linked)) %>%
   mutate() -> choices
 
 # load 1920-1930 ED distance matrix
-distances <- import(here("data", "ed_distances_30_40.csv")) %>% 
+distances <- import(here("data", "ed_distances_10_20.csv")) %>% 
   mutate(dest_ed = as.character(dest_ed),
          ed1 = as.character(ed1),
          dist = if_else(dist > 0 & dist < 1, 1, dist))
@@ -154,32 +154,32 @@ choices_full <- filter(choices_full, is.na(dist) == F)
 # compute and select columns for estimating and interpreting models
 choices_full <- choices_full %>% 
   mutate(
+    # create differences in ED variables
+    diff_ed_pct_black = dest_ed_pct_black - ed_pct_black1,
+    diff_ed_pct_frnbrn = dest_ed_pct_frnbrn - ed_pct_frnbrn1,
+    diff_ed_mean_sei = dest_ed_mean_sei - ed_mean_sei1,
     # create squared terms
     dest_ed_pct_black_sq = dest_ed_pct_black * dest_ed_pct_black,
     dest_ed_pct_frnbrn_sq = dest_ed_pct_frnbrn * dest_ed_pct_frnbrn,
     dest_ed_mean_sei_sq = dest_ed_mean_sei * dest_ed_mean_sei,
+    diff_ed_pct_black_sq = diff_ed_pct_black * diff_ed_pct_black,
+    diff_ed_pct_frnbrn_sq = diff_ed_pct_frnbrn * diff_ed_pct_frnbrn,
+    diff_ed_mean_sei_sq = diff_ed_mean_sei * diff_ed_mean_sei,
     dist_sq = dist * dist,
-    # create all interactions
-    # lags in time1
-    bla1_pblack_ed = ed_pct_black1 * dest_ed_pct_black,
-    bla1_pblack_ed_sq = ed_pct_black1 * dest_ed_pct_black_sq,
-    bla1_dist = ed_pct_black1 * dist,
-    bla1_dist_sq = ed_pct_black1 * dist_sq,
-    imm1_pfrnbrn_ed = ed_pct_frnbrn1 * dest_ed_pct_frnbrn,
-    imm1_pfrnbrn_ed_sq = ed_pct_frnbrn1 * dest_ed_pct_frnbrn_sq,
-    imm1_dist = ed_pct_frnbrn1 * dist,
-    imm1_dist_sq = ed_pct_frnbrn1 * dist_sq,
-    sei1_msei_ed = ed_mean_sei1 * dest_ed_mean_sei,
-    sei1_msei_ed_sq = ed_mean_sei1 * dest_ed_mean_sei_sq,
-    sei1_dist = ed_mean_sei1 * dist,
-    sei1_dist_sq = ed_mean_sei1 * dist_sq,
-    # sei
+    
+    # create all interactions with max hh sei
     sei_pblack_ed = hh_max_sei1 * dest_ed_pct_black,
     sei_pblack_ed_sq = hh_max_sei1 * dest_ed_pct_black_sq,
+    sei_diff_pblack_ed = hh_max_sei1 * diff_ed_pct_black,
+    sei_diff_pblack_ed_sq = hh_max_sei1 * diff_ed_pct_black_sq,
     sei_pfrnbrn_ed = hh_max_sei1 * dest_ed_pct_frnbrn,
     sei_pfrnbrn_ed_sq = hh_max_sei1 * dest_ed_pct_frnbrn_sq,
+    sei_diff_pfrnbrn_ed = hh_max_sei1 * diff_ed_pct_frnbrn,
+    sei_diff_pfrnbrn_ed_sq = hh_max_sei1 * diff_ed_pct_frnbrn_sq,
     sei_msei_ed = hh_max_sei1 * dest_ed_mean_sei,
     sei_msei_ed_sq = hh_max_sei1 * dest_ed_mean_sei_sq,
+    sei_diff_msei_ed = hh_max_sei1 * diff_ed_mean_sei,
+    sei_diff_msei_ed_sq = hh_max_sei1 * diff_ed_mean_sei_sq,
     sei_dist = hh_max_sei1 * dist,
     sei_dist_sq = hh_max_sei1 * dist_sq
   ) %>% 
@@ -189,18 +189,16 @@ choices_full <- choices_full %>%
     serial1, year1, race_cat, ed1, dest_ed, 
     # original source variables for all model terms
     choice, hh_max_sei1, ed_pct_black1, ed_pct_frnbrn1, ed_mean_sei1,
-    dest_ed_pct_black, dest_ed_pct_frnbrn, dest_ed_mean_sei, dist,
-    # all linear interactions
-    bla1_pblack_ed, bla1_dist,
-    imm1_pfrnbrn_ed, imm1_dist,
-    sei1_msei_ed, sei1_dist,
+    dest_ed_pct_black, dest_ed_pct_frnbrn, dest_ed_mean_sei, 
+    diff_ed_pct_black, diff_ed_pct_frnbrn, diff_ed_mean_sei, dist,
+    # squared terms
+    dest_ed_pct_black_sq, dest_ed_pct_frnbrn_sq, dest_ed_mean_sei_sq, 
+    diff_ed_pct_black_sq, diff_ed_pct_frnbrn_sq, diff_ed_mean_sei_sq, dist_sq,
+    # all interactions with hh_max_sei1
     sei_pblack_ed, sei_pfrnbrn_ed, sei_msei_ed, sei_dist,
-    # all quadratic interactions
-    dest_ed_pct_black_sq, dest_ed_pct_frnbrn_sq, dest_ed_mean_sei_sq, dist_sq,
-    bla1_pblack_ed_sq, bla1_dist_sq,
-    imm1_pfrnbrn_ed_sq, imm1_dist_sq,
-    sei1_msei_ed_sq, sei1_dist_sq,
-    sei_pblack_ed_sq, sei_pfrnbrn_ed_sq, sei_msei_ed_sq, sei_dist_sq
+    sei_diff_pblack_ed, sei_diff_pfrnbrn_ed, sei_diff_msei_ed,
+    sei_pblack_ed_sq, sei_pfrnbrn_ed_sq, sei_msei_ed_sq, sei_dist_sq,
+    sei_diff_pblack_ed_sq, sei_diff_pfrnbrn_ed_sq, sei_diff_msei_ed_sq
   )
 
 
@@ -208,15 +206,15 @@ choices_full <- choices_full %>%
 # export choice data by race category
 choices_full %>% 
   filter(race_cat == "Black") %>% 
-  write_csv(here("data", "for_models", "phl_discrete_choice_black_40.csv"))
+  write_csv(here("data", "for_models", "phl_discrete_choice_black_20_diff.csv"))
 
 choices_full %>% 
   filter(race_cat == "White Imm") %>% 
-  write_csv(here("data", "for_models", "phl_discrete_choice_wimm_40.csv"))
+  write_csv(here("data", "for_models", "phl_discrete_choice_wimm_20_diff.csv"))
 
 choices_full %>% 
   filter(race_cat == "White NB") %>% 
-  write_csv(here("data", "for_models", "phl_discrete_choice_wnb_40.csv"))
+  write_csv(here("data", "for_models", "phl_discrete_choice_wnb_20_diff.csv"))
 
 
 

@@ -1,0 +1,489 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/bbellman/census-linking/Stata/test_03-25.log
+  log type:  text
+ opened on:  26 Mar 2019, 10:43:32
+
+. 
+. 
+. *** run for each of three data files (white, wimm, black)
+. 
+. *** White US-born
+. 
+. * load data
+. clear
+
+. import delim using "/home/bbellman/census-linking/data/for_models/test-stata-
+> white_03-25.csv"
+(14 vars, 11,030,469 obs)
+
+. 
+. * convert distance vars to numeric values
+. replace dist = "" if dist == "NA"
+(39,687 real changes made)
+
+. replace dist2 = "" if dist2 == "NA"
+(39,687 real changes made)
+
+. destring dist, replace
+dist: all characters numeric; replaced as double
+(39687 missing values generated)
+
+. destring dist2, replace
+dist2: all characters numeric; replaced as double
+(39687 missing values generated)
+
+. 
+. * set all interactions
+. gen edb1_edb2 = ed_pct_black1 * dest_ed_pct_black
+
+. gen edb1_edf2 = ed_pct_black1 * dest_ed_pct_frnbrn
+
+. gen edb1_edsei2 = ed_pct_black1 * dest_ed_mean_sei
+
+. gen edb1_dist = ed_pct_black1 * dist
+(39,687 missing values generated)
+
+. gen edb1_dist2 = ed_pct_black1 * dist2
+(39,687 missing values generated)
+
+. 
+. gen edf1_edb2 = ed_pct_frnbrn1 * dest_ed_pct_black
+
+. gen edf1_edf2 = ed_pct_frnbrn1 * dest_ed_pct_frnbrn
+
+. gen edf1_edsei2 = ed_pct_frnbrn1 * dest_ed_mean_sei
+
+. gen edf1_dist = ed_pct_frnbrn1 * dist
+(39,687 missing values generated)
+
+. gen edf1_dist2 = ed_pct_frnbrn1 * dist2
+(39,687 missing values generated)
+
+. 
+. gen edsei1_edb2 = ed_mean_sei1 * dest_ed_pct_black
+
+. gen edsei1_edf2 = ed_mean_sei1 * dest_ed_pct_frnbrn
+
+. gen edsei1_edsei2 = ed_mean_sei1 * dest_ed_mean_sei
+
+. gen edsei1_dist = ed_mean_sei1 * dist
+(39,687 missing values generated)
+
+. gen edsei1_dist2 = ed_mean_sei1 * dist2
+(39,687 missing values generated)
+
+. 
+. 
+. * run conditional logit model
+. clogit choice ed_pct_black1 ed_pct_frnbrn1 ed_mean_sei1 dest_ed_pct_black des
+> t_ed_pct_frnbrn dest_ed_mean_sei dist dist2 edb1_edb2 edb1_edf2 edb1_edsei2 e
+> db1_dist edb1_dist2 edf1_edb2 edf1_edf2 edf1_edsei2 edf1_dist edf1_dist2 edse
+> i1_edb2 edsei1_edf2 edsei1_edsei2 edsei1_dist edsei1_dist2, group(serial1)
+note: multiple positive outcomes within groups encountered.
+note: 125 groups (15,298 obs) dropped because of all positive or
+      all negative outcomes.
+note: ed_pct_black1 omitted because of no within-group variance.
+note: ed_pct_frnbrn1 omitted because of no within-group variance.
+note: ed_mean_sei1 omitted because of no within-group variance.
+
+Iteration 0:   log likelihood = -280773.08  
+Iteration 1:   log likelihood = -279253.42  
+Iteration 2:   log likelihood = -279232.33  
+Iteration 3:   log likelihood = -279232.31  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     = 10,975,484
+                                                LR chi2(16)       =  305844.30
+                                                Prob > chi2       =     0.0000
+Log likelihood = -279232.31                     Pseudo R2         =     0.3539
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ed_pct_bla~1 |          0  (omitted)
+ed_pct_frn~1 |          0  (omitted)
+ed_mean_sei1 |          0  (omitted)
+dest_ed_pc~k |  -.0457967   .0018308   -25.01   0.000     -.049385   -.0422084
+dest_ed_pc~n |  -.1022756   .0025278   -40.46   0.000    -.1072299   -.0973213
+dest_ed_me~i |  -.0460431   .0024239   -19.00   0.000    -.0507937   -.0412924
+        dist |  -.0013882   .0000142   -97.71   0.000     -.001416   -.0013604
+       dist2 |   3.88e-08   5.85e-10    66.36   0.000     3.77e-08    4.00e-08
+   edb1_edb2 |   .0007493     .00002    37.42   0.000       .00071    .0007885
+   edb1_edf2 |   .0002351    .000053     4.43   0.000     .0001312    .0003391
+ edb1_edsei2 |   .0000873   .0000463     1.88   0.059    -3.48e-06     .000178
+   edb1_dist |   9.30e-06   2.61e-07    35.62   0.000     8.79e-06    9.82e-06
+  edb1_dist2 |  -3.31e-10   1.29e-11   -25.76   0.000    -3.56e-10   -3.06e-10
+   edf1_edb2 |   .0001694   .0000426     3.97   0.000     .0000858    .0002529
+   edf1_edf2 |   .0027046   .0000446    60.63   0.000     .0026172    .0027921
+ edf1_edsei2 |  -.0001365   .0000615    -2.22   0.026     -.000257    -.000016
+   edf1_dist |    .000012   2.99e-07    39.94   0.000     .0000114    .0000125
+  edf1_dist2 |  -2.47e-10   1.29e-11   -19.21   0.000    -2.72e-10   -2.22e-10
+ edsei1_edb2 |   .0003758   .0001089     3.45   0.001     .0001623    .0005893
+ edsei1_edf2 |   .0003776   .0001666     2.27   0.023      .000051    .0007043
+edsei1_eds~2 |   .0031544   .0001385    22.77   0.000     .0028829    .0034258
+ edsei1_dist |   .0000116   9.08e-07    12.82   0.000     9.86e-06    .0000134
+edsei1_dist2 |  -6.10e-12   3.76e-11    -0.16   0.871    -7.99e-11    6.77e-11
+------------------------------------------------------------------------------
+
+. clogit, or
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     = 10,975,484
+                                                LR chi2(16)       =  305844.30
+                                                Prob > chi2       =     0.0000
+Log likelihood = -279232.31                     Pseudo R2         =     0.3539
+
+------------------------------------------------------------------------------
+      choice | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ed_pct_bla~1 |          1  (omitted)
+ed_pct_frn~1 |          1  (omitted)
+ed_mean_sei1 |          1  (omitted)
+dest_ed_pc~k |   .9552362   .0017488   -25.01   0.000     .9518147      .95867
+dest_ed_pc~n |   .9027807    .002282   -40.46   0.000     .8983191    .9072645
+dest_ed_me~i |   .9550008   .0023148   -19.00   0.000     .9504747    .9595486
+        dist |   .9986128   .0000142   -97.71   0.000      .998585    .9986406
+       dist2 |          1   5.85e-10    66.36   0.000            1           1
+   edb1_edb2 |    1.00075     .00002    37.42   0.000      1.00071    1.000789
+   edb1_edf2 |   1.000235    .000053     4.43   0.000     1.000131    1.000339
+ edb1_edsei2 |   1.000087   .0000463     1.88   0.059     .9999965    1.000178
+   edb1_dist |   1.000009   2.61e-07    35.62   0.000     1.000009     1.00001
+  edb1_dist2 |          1   1.29e-11   -25.76   0.000            1           1
+   edf1_edb2 |   1.000169   .0000426     3.97   0.000     1.000086    1.000253
+   edf1_edf2 |   1.002708   .0000447    60.63   0.000     1.002621    1.002796
+ edf1_edsei2 |   .9998635   .0000615    -2.22   0.026     .9997431     .999984
+   edf1_dist |   1.000012   2.99e-07    39.94   0.000     1.000011    1.000013
+  edf1_dist2 |          1   1.29e-11   -19.21   0.000            1           1
+ edsei1_edb2 |   1.000376    .000109     3.45   0.001     1.000162    1.000589
+ edsei1_edf2 |   1.000378   .0001667     2.27   0.023     1.000051    1.000705
+edsei1_eds~2 |   1.003159   .0001389    22.77   0.000     1.002887    1.003432
+ edsei1_dist |   1.000012   9.08e-07    12.82   0.000      1.00001    1.000013
+edsei1_dist2 |          1   3.76e-11    -0.16   0.871            1           1
+------------------------------------------------------------------------------
+
+. 
+. *** White foreign-born
+. 
+. * load data
+. clear
+
+. import delim using "/home/bbellman/census-linking/data/for_models/test-stata-
+> wimm_03-25.csv"
+(14 vars, 4,954,269 obs)
+
+. 
+. * convert distance vars to numeric values
+. replace dist = "" if dist == "NA"
+(23,210 real changes made)
+
+. replace dist2 = "" if dist2 == "NA"
+(23,210 real changes made)
+
+. destring dist, replace
+dist: all characters numeric; replaced as double
+(23210 missing values generated)
+
+. destring dist2, replace
+dist2: all characters numeric; replaced as double
+(23210 missing values generated)
+
+. 
+. * set all interactions
+. gen edb1_edb2 = ed_pct_black1 * dest_ed_pct_black
+
+. gen edb1_edf2 = ed_pct_black1 * dest_ed_pct_frnbrn
+
+. gen edb1_edsei2 = ed_pct_black1 * dest_ed_mean_sei
+
+. gen edb1_dist = ed_pct_black1 * dist
+(23,210 missing values generated)
+
+. gen edb1_dist2 = ed_pct_black1 * dist2
+(23,210 missing values generated)
+
+. 
+. gen edf1_edb2 = ed_pct_frnbrn1 * dest_ed_pct_black
+
+. gen edf1_edf2 = ed_pct_frnbrn1 * dest_ed_pct_frnbrn
+
+. gen edf1_edsei2 = ed_pct_frnbrn1 * dest_ed_mean_sei
+
+. gen edf1_dist = ed_pct_frnbrn1 * dist
+(23,210 missing values generated)
+
+. gen edf1_dist2 = ed_pct_frnbrn1 * dist2
+(23,210 missing values generated)
+
+. 
+. gen edsei1_edb2 = ed_mean_sei1 * dest_ed_pct_black
+
+. gen edsei1_edf2 = ed_mean_sei1 * dest_ed_pct_frnbrn
+
+. gen edsei1_edsei2 = ed_mean_sei1 * dest_ed_mean_sei
+
+. gen edsei1_dist = ed_mean_sei1 * dist
+(23,210 missing values generated)
+
+. gen edsei1_dist2 = ed_mean_sei1 * dist2
+(23,210 missing values generated)
+
+. 
+. 
+. * run conditional logit model
+. clogit choice ed_pct_black1 ed_pct_frnbrn1 ed_mean_sei1 dest_ed_pct_black des
+> t_ed_pct_frnbrn dest_ed_mean_sei dist dist2 edb1_edb2 edb1_edf2 edb1_edsei2 e
+> db1_dist edb1_dist2 edf1_edb2 edf1_edf2 edf1_edsei2 edf1_dist edf1_dist2 edse
+> i1_edb2 edsei1_edf2 edsei1_edsei2 edsei1_dist edsei1_dist2, group(serial1)
+note: multiple positive outcomes within groups encountered.
+note: 17 groups (2,094 obs) dropped because of all positive or
+      all negative outcomes.
+note: ed_pct_black1 omitted because of no within-group variance.
+note: ed_pct_frnbrn1 omitted because of no within-group variance.
+note: ed_mean_sei1 omitted because of no within-group variance.
+
+Iteration 0:   log likelihood = -134947.24  
+Iteration 1:   log likelihood = -132445.48  
+Iteration 2:   log likelihood = -132245.97  
+Iteration 3:   log likelihood = -132244.76  
+Iteration 4:   log likelihood = -132244.76  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  4,928,965
+                                                LR chi2(17)       =  122669.25
+                                                Prob > chi2       =     0.0000
+Log likelihood = -132244.76                     Pseudo R2         =     0.3168
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ed_pct_bla~1 |          0  (omitted)
+ed_pct_frn~1 |          0  (omitted)
+ed_mean_sei1 |          0  (omitted)
+dest_ed_pc~k |   -.049071    .002565   -19.13   0.000    -.0540984   -.0440436
+dest_ed_pc~n |  -.0787141   .0026761   -29.41   0.000    -.0839592   -.0734689
+dest_ed_me~i |  -.1026832   .0038934   -26.37   0.000    -.1103141   -.0950523
+        dist |  -.0018076   .0000201   -89.92   0.000     -.001847   -.0017682
+       dist2 |   5.56e-08   9.03e-10    61.60   0.000     5.38e-08    5.74e-08
+   edb1_edb2 |   .0008492   .0000273    31.14   0.000     .0007958    .0009027
+   edb1_edf2 |   .0006117   .0000548    11.15   0.000     .0005042    .0007192
+ edb1_edsei2 |   .0003465   .0000734     4.72   0.000     .0002026    .0004904
+   edb1_dist |   .0000117   3.61e-07    32.32   0.000      .000011    .0000124
+  edb1_dist2 |  -4.82e-10   2.07e-11   -23.30   0.000    -5.22e-10   -4.41e-10
+   edf1_edb2 |   .0005369   .0000384    14.00   0.000     .0004617    .0006121
+   edf1_edf2 |   .0023345   .0000372    62.82   0.000     .0022617    .0024073
+ edf1_edsei2 |   .0006796   .0000561    12.12   0.000     .0005697    .0007896
+   edf1_dist |   .0000161   2.80e-07    57.41   0.000     .0000155    .0000166
+  edf1_dist2 |  -4.35e-10   1.29e-11   -33.81   0.000    -4.61e-10   -4.10e-10
+ edsei1_edb2 |   .0007803   .0001643     4.75   0.000     .0004583    .0011022
+ edsei1_edf2 |   .0020077   .0001814    11.07   0.000     .0016522    .0023632
+edsei1_eds~2 |   .0063711    .000232    27.46   0.000     .0059164    .0068258
+ edsei1_dist |    .000037   1.36e-06    27.18   0.000     .0000343    .0000397
+edsei1_dist2 |  -9.82e-10   6.17e-11   -15.91   0.000    -1.10e-09   -8.61e-10
+------------------------------------------------------------------------------
+
+. clogit, or
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  4,928,965
+                                                LR chi2(17)       =  122669.25
+                                                Prob > chi2       =     0.0000
+Log likelihood = -132244.76                     Pseudo R2         =     0.3168
+
+------------------------------------------------------------------------------
+      choice | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ed_pct_bla~1 |          1  (omitted)
+ed_pct_frn~1 |          1  (omitted)
+ed_mean_sei1 |          1  (omitted)
+dest_ed_pc~k |   .9521135   .0024422   -19.13   0.000     .9473389    .9569122
+dest_ed_pc~n |   .9243042   .0024736   -29.41   0.000     .9194688     .929165
+dest_ed_me~i |   .9024128   .0035134   -26.37   0.000     .8955528    .9093254
+        dist |   .9981941   .0000201   -89.92   0.000     .9981547    .9982334
+       dist2 |          1   9.03e-10    61.60   0.000            1           1
+   edb1_edb2 |    1.00085   .0000273    31.14   0.000     1.000796    1.000903
+   edb1_edf2 |   1.000612   .0000549    11.15   0.000     1.000504    1.000719
+ edb1_edsei2 |   1.000347   .0000734     4.72   0.000     1.000203     1.00049
+   edb1_dist |   1.000012   3.61e-07    32.32   0.000     1.000011    1.000012
+  edb1_dist2 |          1   2.07e-11   -23.30   0.000            1           1
+   edf1_edb2 |   1.000537   .0000384    14.00   0.000     1.000462    1.000612
+   edf1_edf2 |   1.002337   .0000372    62.82   0.000     1.002264     1.00241
+ edf1_edsei2 |    1.00068   .0000561    12.12   0.000      1.00057     1.00079
+   edf1_dist |   1.000016   2.80e-07    57.41   0.000     1.000016    1.000017
+  edf1_dist2 |          1   1.29e-11   -33.81   0.000            1           1
+ edsei1_edb2 |   1.000781   .0001644     4.75   0.000     1.000458    1.001103
+ edsei1_edf2 |    1.00201   .0001818    11.07   0.000     1.001654    1.002366
+edsei1_eds~2 |   1.006391   .0002335    27.46   0.000     1.005934    1.006849
+ edsei1_dist |   1.000037   1.36e-06    27.18   0.000     1.000034     1.00004
+edsei1_dist2 |          1   6.17e-11   -15.91   0.000            1           1
+------------------------------------------------------------------------------
+
+. 
+. *** Black
+. 
+. * load data
+. clear
+
+. import delim using "/home/bbellman/census-linking/data/for_models/test-stata-
+> black_03-25.csv"
+(14 vars, 981,729 obs)
+
+. 
+. * convert distance vars to numeric values
+. replace dist = "" if dist == "NA"
+(5,620 real changes made)
+
+. replace dist2 = "" if dist2 == "NA"
+(5,620 real changes made)
+
+. destring dist, replace
+dist: all characters numeric; replaced as double
+(5620 missing values generated)
+
+. destring dist2, replace
+dist2: all characters numeric; replaced as double
+(5620 missing values generated)
+
+. 
+. * set all interactions
+. gen edb1_edb2 = ed_pct_black1 * dest_ed_pct_black
+
+. gen edb1_edf2 = ed_pct_black1 * dest_ed_pct_frnbrn
+
+. gen edb1_edsei2 = ed_pct_black1 * dest_ed_mean_sei
+
+. gen edb1_dist = ed_pct_black1 * dist
+(5,620 missing values generated)
+
+. gen edb1_dist2 = ed_pct_black1 * dist2
+(5,620 missing values generated)
+
+. 
+. gen edf1_edb2 = ed_pct_frnbrn1 * dest_ed_pct_black
+
+. gen edf1_edf2 = ed_pct_frnbrn1 * dest_ed_pct_frnbrn
+
+. gen edf1_edsei2 = ed_pct_frnbrn1 * dest_ed_mean_sei
+
+. gen edf1_dist = ed_pct_frnbrn1 * dist
+(5,620 missing values generated)
+
+. gen edf1_dist2 = ed_pct_frnbrn1 * dist2
+(5,620 missing values generated)
+
+. 
+. gen edsei1_edb2 = ed_mean_sei1 * dest_ed_pct_black
+
+. gen edsei1_edf2 = ed_mean_sei1 * dest_ed_pct_frnbrn
+
+. gen edsei1_edsei2 = ed_mean_sei1 * dest_ed_mean_sei
+
+. gen edsei1_dist = ed_mean_sei1 * dist
+(5,620 missing values generated)
+
+. gen edsei1_dist2 = ed_mean_sei1 * dist2
+(5,620 missing values generated)
+
+. 
+. 
+. * run conditional logit model
+. clogit choice ed_pct_black1 ed_pct_frnbrn1 ed_mean_sei1 dest_ed_pct_black des
+> t_ed_pct_frnbrn dest_ed_mean_sei dist dist2 edb1_edb2 edb1_edf2 edb1_edsei2 e
+> db1_dist edb1_dist2 edf1_edb2 edf1_edf2 edf1_edsei2 edf1_dist edf1_dist2 edse
+> i1_edb2 edsei1_edf2 edsei1_edsei2 edsei1_dist edsei1_dist2, group(serial1)
+note: multiple positive outcomes within groups encountered.
+note: 8 groups (976 obs) dropped because of all positive or
+      all negative outcomes.
+note: ed_pct_black1 omitted because of no within-group variance.
+note: ed_pct_frnbrn1 omitted because of no within-group variance.
+note: ed_mean_sei1 omitted because of no within-group variance.
+
+Iteration 0:   log likelihood = -25547.555  
+Iteration 1:   log likelihood =  -25427.27  
+Iteration 2:   log likelihood =  -25426.48  
+Iteration 3:   log likelihood =  -25426.48  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =    975,133
+                                                LR chi2(17)       =   26414.57
+                                                Prob > chi2       =     0.0000
+Log likelihood =  -25426.48                     Pseudo R2         =     0.3419
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ed_pct_bla~1 |          0  (omitted)
+ed_pct_frn~1 |          0  (omitted)
+ed_mean_sei1 |          0  (omitted)
+dest_ed_pc~k |   .0411958   .0037012    11.13   0.000     .0339416    .0484499
+dest_ed_pc~n |  -.0245657    .012395    -1.98   0.047    -.0488594    -.000272
+dest_ed_me~i |  -.0239594   .0153196    -1.56   0.118    -.0539853    .0060665
+        dist |  -.0010995   .0000511   -21.53   0.000    -.0011996   -.0009994
+       dist2 |   2.75e-08   2.17e-09    12.68   0.000     2.33e-08    3.18e-08
+   edb1_edb2 |  -8.90e-06   .0000291    -0.31   0.760    -.0000659    .0000481
+   edb1_edf2 |   .0000798   .0001019     0.78   0.434      -.00012    .0002796
+ edb1_edsei2 |  -.0001338   .0001225    -1.09   0.275    -.0003738    .0001063
+   edb1_dist |   4.82e-06   4.03e-07    11.96   0.000     4.03e-06    5.61e-06
+  edb1_dist2 |  -9.40e-11   1.83e-11    -5.13   0.000    -1.30e-10   -5.81e-11
+   edf1_edb2 |  -.0001169   .0000838    -1.39   0.163    -.0002812    .0000474
+   edf1_edf2 |   .0016487   .0002503     6.59   0.000      .001158    .0021393
+ edf1_edsei2 |  -.0007733   .0003997    -1.93   0.053    -.0015567    .0000102
+   edf1_dist |    .000011   1.18e-06     9.29   0.000     8.66e-06    .0000133
+  edf1_dist2 |  -3.39e-10   5.49e-11    -6.18   0.000    -4.47e-10   -2.32e-10
+ edsei1_edb2 |  -.0007927   .0002108    -3.76   0.000    -.0012058   -.0003796
+ edsei1_edf2 |  -.0021659   .0007284    -2.97   0.003    -.0035935   -.0007383
+edsei1_eds~2 |   .0024495   .0007566     3.24   0.001     .0009665    .0039324
+ edsei1_dist |   3.67e-06   3.10e-06     1.19   0.236    -2.40e-06    9.75e-06
+edsei1_dist2 |   5.04e-10   1.38e-10     3.66   0.000     2.34e-10    7.73e-10
+------------------------------------------------------------------------------
+
+. clogit, or
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =    975,133
+                                                LR chi2(17)       =   26414.57
+                                                Prob > chi2       =     0.0000
+Log likelihood =  -25426.48                     Pseudo R2         =     0.3419
+
+------------------------------------------------------------------------------
+      choice | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ed_pct_bla~1 |          1  (omitted)
+ed_pct_frn~1 |          1  (omitted)
+ed_mean_sei1 |          1  (omitted)
+dest_ed_pc~k |   1.042056   .0038568    11.13   0.000     1.034524    1.049643
+dest_ed_pc~n |   .9757336   .0120942    -1.98   0.047      .952315    .9997281
+dest_ed_me~i |   .9763253   .0149569    -1.56   0.118     .9474461    1.006085
+        dist |   .9989011    .000051   -21.53   0.000     .9988011    .9990011
+       dist2 |          1   2.17e-09    12.68   0.000            1           1
+   edb1_edb2 |   .9999911   .0000291    -0.31   0.760     .9999341    1.000048
+   edb1_edf2 |    1.00008   .0001019     0.78   0.434       .99988     1.00028
+ edb1_edsei2 |   .9998663   .0001224    -1.09   0.275     .9996263    1.000106
+   edb1_dist |   1.000005   4.03e-07    11.96   0.000     1.000004    1.000006
+  edb1_dist2 |          1   1.83e-11    -5.13   0.000            1           1
+   edf1_edb2 |   .9998831   .0000838    -1.39   0.163     .9997189    1.000047
+   edf1_edf2 |    1.00165   .0002507     6.59   0.000     1.001159    1.002142
+ edf1_edsei2 |    .999227   .0003994    -1.93   0.053     .9984445     1.00001
+   edf1_dist |   1.000011   1.18e-06     9.29   0.000     1.000009    1.000013
+  edf1_dist2 |          1   5.49e-11    -6.18   0.000            1           1
+ edsei1_edb2 |   .9992076   .0002106    -3.76   0.000      .998795    .9996205
+ edsei1_edf2 |   .9978364   .0007268    -2.97   0.003      .996413    .9992619
+edsei1_eds~2 |   1.002452   .0007585     3.24   0.001     1.000967     1.00394
+ edsei1_dist |   1.000004   3.10e-06     1.19   0.236     .9999976     1.00001
+edsei1_dist2 |          1   1.38e-10     3.66   0.000            1           1
+------------------------------------------------------------------------------
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  /home/bbellman/census-linking/Stata/test_03-25.log
+  log type:  text
+ closed on:  26 Mar 2019, 10:55:47
+-------------------------------------------------------------------------------

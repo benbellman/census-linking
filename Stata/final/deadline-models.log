@@ -1,0 +1,1081 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/bbellman/census-linking/Stata/final/deadline-models.log
+  log type:  text
+ opened on:  14 Aug 2019, 17:11:21
+
+. 
+. **********
+. 
+. 
+. *** Black sample, 1910-1920 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_black_20.csv", clear
+(74 vars, 453,198 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(4,168 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq bla1_pblack_ed bla1_pbla
+> ck_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pblack_ed sei1_pblack_ed_sq de
+> st_ed_pct_frnbrn dest_ed_pct_frnbrn_sq bla1_pfrnbrn_ed bla1_pfrnbrn_ed_sq imm
+> 1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_sq dest_ed_me
+> an_sei dest_ed_mean_sei_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_mse
+> i_ed_sq sei1_msei_ed sei1_msei_ed_sq dist dist_sq bla1_dist bla1_dist_sq imm1
+> _dist imm1_dist_sq sei1_dist sei1_dist_sq, group(serial1)
+
+Iteration 0:   log likelihood =  -8027.638  
+Iteration 1:   log likelihood =  -7978.657  
+Iteration 2:   log likelihood = -7977.1644  
+Iteration 3:   log likelihood =  -7976.094  
+Iteration 4:   log likelihood = -7976.0539  
+Iteration 5:   log likelihood = -7976.0538  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =    449,030
+                                                LR chi2(29)       =    9548.08
+                                                Prob > chi2       =     0.0000
+Log likelihood = -7976.0538                     Pseudo R2         =     0.3744
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |   .1651833   .0210048     7.86   0.000     .1240147     .206352
+dest_ed~k_sq |   -.001964   .0002716    -7.23   0.000    -.0024963   -.0014317
+bla1_pblac~d |  -.0007177    .000159    -4.51   0.000    -.0010294   -.0004061
+bla1_pblac~q |   .0000122   1.98e-06     6.19   0.000     8.37e-06    .0000161
+imm1_pblac~d |  -.0009876   .0003809    -2.59   0.010    -.0017341    -.000241
+imm1_pblac~q |    .000017   5.00e-06     3.40   0.001     7.19e-06    .0000268
+sei1_pblac~d |  -.0019067   .0010621    -1.80   0.073    -.0039883    .0001749
+sei1_pblac~q |   .0000266   .0000135     1.97   0.048     2.02e-07     .000053
+dest_ed_pc~n |   .0044361   .0755797     0.06   0.953    -.1436974    .1525697
+dest_ed~n_sq |  -.0013429   .0015801    -0.85   0.395    -.0044399     .001754
+bla1_pfrnb~d |  -.0008345   .0005943    -1.40   0.160    -.0019993    .0003303
+bla1_pfrnb~q |   .0000208   .0000125     1.67   0.096    -3.68e-06    .0000453
+imm1_pfrnb~d |   .0010899   .0012501     0.87   0.383    -.0013602      .00354
+imm1_pfrnb~q |   .0000174   .0000228     0.76   0.445    -.0000273    .0000622
+sei1_pfrnb~d |  -.0010495   .0039958    -0.26   0.793    -.0088811    .0067821
+sei1_pfrnb~q |  -.0000201   .0000849    -0.24   0.813    -.0001866    .0001464
+dest_ed_me~i |  -.3646064   .2102328    -1.73   0.083    -.7766551    .0474423
+dest_ed_me~q |   .0027921   .0091257     0.31   0.760     -.015094    .0206783
+bla1_msei_ed |  -.0003342   .0015962    -0.21   0.834    -.0034627    .0027943
+bla1_msei_~q |   .0000538   .0000702     0.77   0.443    -.0000838    .0001914
+imm1_msei_ed |    .011013   .0051667     2.13   0.033     .0008864    .0211396
+imm1_msei_~q |  -.0005437   .0002413    -2.25   0.024    -.0010166   -.0000709
+sei1_msei_ed |   .0292944   .0099442     2.95   0.003     .0098042    .0487847
+sei1_msei_~q |  -.0003927   .0003951    -0.99   0.320     -.001167    .0003817
+        dist |  -.0010966   .0001126    -9.74   0.000    -.0013174   -.0008759
+     dist_sq |   1.64e-08   5.27e-09     3.12   0.002     6.12e-09    2.68e-08
+   bla1_dist |   4.13e-06   9.55e-07     4.32   0.000     2.26e-06    6.00e-06
+bla1_dist_sq |  -3.12e-11   4.61e-11    -0.68   0.499    -1.22e-10    5.92e-11
+   imm1_dist |   6.15e-06   2.21e-06     2.78   0.005     1.82e-06    .0000105
+imm1_dist_sq |  -1.14e-11   1.09e-10    -0.10   0.917    -2.25e-10    2.02e-10
+   sei1_dist |   8.25e-07   5.87e-06     0.14   0.888    -.0000107    .0000123
+sei1_dist_sq |   1.28e-09   2.81e-10     4.56   0.000     7.32e-10    1.83e-09
+------------------------------------------------------------------------------
+
+. *clogit, or
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/obsv-black-20-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-b
+> lack-20-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-black-20
+> -preds.csv saved
+
+. 
+. * load example data
+. import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-exa
+> mples-final.csv", clear
+(37 vars, 2,640 obs)
+
+. 
+. * predictions for hypothetical ED choice sets
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * over-write model data with predictions attached
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/ex-black-20-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-bla
+> ck-20-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-black-20-p
+> reds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *** Black sample, 1920-1930 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_black_30.csv", clear
+(74 vars, 367,166 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(5,413 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq bla1_pblack_ed bla1_pbla
+> ck_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pblack_ed sei1_pblack_ed_sq de
+> st_ed_pct_frnbrn dest_ed_pct_frnbrn_sq bla1_pfrnbrn_ed bla1_pfrnbrn_ed_sq imm
+> 1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_sq dest_ed_me
+> an_sei dest_ed_mean_sei_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_mse
+> i_ed_sq sei1_msei_ed sei1_msei_ed_sq dist dist_sq bla1_dist bla1_dist_sq imm1
+> _dist imm1_dist_sq sei1_dist sei1_dist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -9152.0954  
+Iteration 1:   log likelihood =  -9120.992  
+Iteration 2:   log likelihood = -9120.2784  
+Iteration 3:   log likelihood = -9120.2507  
+Iteration 4:   log likelihood = -9120.2506  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =    361,753
+                                                LR chi2(29)       =   10103.01
+                                                Prob > chi2       =     0.0000
+Log likelihood = -9120.2506                     Pseudo R2         =     0.3564
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |    .119665   .0186544     6.41   0.000      .083103     .156227
+dest_ed~k_sq |  -.0011434   .0001993    -5.74   0.000     -.001534   -.0007528
+bla1_pblac~d |  -.0002662   .0001427    -1.87   0.062    -.0005458    .0000134
+bla1_pblac~q |   5.41e-06   1.54e-06     3.53   0.000     2.40e-06    8.42e-06
+imm1_pblac~d |  -.0001886   .0003925    -0.48   0.631    -.0009578    .0005806
+imm1_pblac~q |   4.69e-06   4.21e-06     1.11   0.265    -3.55e-06    .0000129
+sei1_pblac~d |  -.0015976   .0010894    -1.47   0.143    -.0037328    .0005377
+sei1_pblac~q |   .0000218   .0000113     1.94   0.052    -2.24e-07    .0000439
+dest_ed_pc~n |   .0622785    .059322     1.05   0.294    -.0539905    .1785474
+dest_ed~n_sq |  -.0025799   .0012316    -2.09   0.036    -.0049938    -.000166
+bla1_pfrnb~d |   .0002295   .0005686     0.40   0.686    -.0008848    .0013439
+bla1_pfrnb~q |  -3.49e-07   .0000131    -0.03   0.979     -.000026    .0000253
+imm1_pfrnb~d |   .0013118   .0010711     1.22   0.221    -.0007876    .0034111
+imm1_pfrnb~q |   .0000144   .0000197     0.73   0.466    -.0000243     .000053
+sei1_pfrnb~d |  -.0088103    .002946    -2.99   0.003    -.0145843   -.0030363
+sei1_pfrnb~q |   .0001738   .0000514     3.38   0.001      .000073    .0002745
+dest_ed_me~i |  -.0463798   .2033237    -0.23   0.820    -.4448869    .3521273
+dest_ed_me~q |  -.0045491   .0083378    -0.55   0.585    -.0208909    .0117927
+bla1_msei_ed |   .0003097   .0015897     0.19   0.846     -.002806    .0034255
+bla1_msei_~q |   5.42e-06   .0000652     0.08   0.934    -.0001224    .0001332
+imm1_msei_ed |   .0013509   .0046197     0.29   0.770    -.0077035    .0104053
+imm1_msei_~q |  -.0000737   .0001962    -0.38   0.707    -.0004583    .0003109
+sei1_msei_ed |    .023368   .0111074     2.10   0.035     .0015979     .045138
+sei1_msei_~q |   -.000302   .0004371    -0.69   0.490    -.0011587    .0005547
+        dist |  -.0012229   .0000904   -13.52   0.000    -.0014001   -.0010457
+     dist_sq |   3.06e-08   4.15e-09     7.37   0.000     2.25e-08    3.87e-08
+   bla1_dist |   6.20e-06   6.96e-07     8.91   0.000     4.84e-06    7.56e-06
+bla1_dist_sq |  -1.38e-10   3.49e-11    -3.95   0.000    -2.06e-10   -6.96e-11
+   imm1_dist |   .0000135   1.97e-06     6.85   0.000     9.62e-06    .0000173
+imm1_dist_sq |  -4.02e-10   1.00e-10    -4.00   0.000    -5.98e-10   -2.05e-10
+   sei1_dist |   .0000132   5.48e-06     2.41   0.016     2.46e-06    .0000239
+sei1_dist_sq |   3.26e-10   2.59e-10     1.26   0.207    -1.81e-10    8.33e-10
+------------------------------------------------------------------------------
+
+. *clogit, or
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/obsv-black-30-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-b
+> lack-30-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-black-30
+> -preds.csv saved
+
+. 
+. * load example data
+. import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-exa
+> mples-final.csv", clear
+(37 vars, 2,640 obs)
+
+. 
+. * predictions for hypothetical ED choice sets
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * over-write model data with predictions attached
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/ex-black-30-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-bla
+> ck-30-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-black-30-p
+> reds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *** Black sample, 1930-1940 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_black_40.csv", clear
+(74 vars, 1,165,923 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(2,275 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq bla1_pblack_ed bla1_pbla
+> ck_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pblack_ed sei1_pblack_ed_sq de
+> st_ed_pct_frnbrn dest_ed_pct_frnbrn_sq bla1_pfrnbrn_ed bla1_pfrnbrn_ed_sq imm
+> 1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_sq dest_ed_me
+> an_sei dest_ed_mean_sei_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_mse
+> i_ed_sq sei1_msei_ed sei1_msei_ed_sq dist dist_sq bla1_dist bla1_dist_sq imm1
+> _dist imm1_dist_sq sei1_dist sei1_dist_sq, group(serial1)
+
+Iteration 0:   log likelihood =  -16186.77  
+Iteration 1:   log likelihood = -16110.902  
+Iteration 2:   log likelihood = -16110.016  
+Iteration 3:   log likelihood = -16110.014  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  1,163,648
+                                                LR chi2(29)       =   27703.04
+                                                Prob > chi2       =     0.0000
+Log likelihood = -16110.014                     Pseudo R2         =     0.4623
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |   .1518987   .0159814     9.50   0.000     .1205758    .1832216
+dest_ed~k_sq |  -.0015575   .0001631    -9.55   0.000    -.0018771   -.0012379
+bla1_pblac~d |  -.0008174   .0001276    -6.41   0.000    -.0010675   -.0005673
+bla1_pblac~q |   .0000111   1.29e-06     8.57   0.000     8.55e-06    .0000136
+imm1_pblac~d |  -.0005861   .0003596    -1.63   0.103    -.0012909    .0001187
+imm1_pblac~q |   .0000119   3.85e-06     3.08   0.002     4.32e-06    .0000194
+sei1_pblac~d |  -.0015981   .0008164    -1.96   0.050    -.0031982    2.04e-06
+sei1_pblac~q |   .0000271   8.13e-06     3.33   0.001     .0000111     .000043
+dest_ed_pc~n |  -.1440696   .0734733    -1.96   0.050    -.2880747   -.0000646
+dest_ed~n_sq |     .00156   .0019784     0.79   0.430    -.0023176    .0054376
+bla1_pfrnb~d |   .0013562   .0006068     2.23   0.025     .0001668    .0025456
+bla1_pfrnb~q |  -.0000274    .000017    -1.62   0.106    -.0000607    5.85e-06
+imm1_pfrnb~d |   .0075502   .0016412     4.60   0.000     .0043335    .0107669
+imm1_pfrnb~q |  -.0000989   .0000404    -2.45   0.014    -.0001781   -.0000198
+sei1_pfrnb~d |  -.0014974   .0037739    -0.40   0.692     -.008894    .0058993
+sei1_pfrnb~q |   .0000184   .0001052     0.17   0.861    -.0001878    .0002246
+dest_ed_me~i |  -.3388209   .1078452    -3.14   0.002    -.5501937   -.1274481
+dest_ed_me~q |    .004791    .003491     1.37   0.170    -.0020512    .0116331
+bla1_msei_ed |   .0018454   .0009015     2.05   0.041     .0000785    .0036123
+bla1_msei_~q |  -.0000333   .0000299    -1.11   0.265    -.0000918    .0000253
+imm1_msei_ed |    .006763   .0031581     2.14   0.032     .0005732    .0129528
+imm1_msei_~q |  -.0002318   .0001125    -2.06   0.039    -.0004524   -.0000113
+sei1_msei_ed |   .0217788   .0044894     4.85   0.000     .0129798    .0305778
+sei1_msei_~q |  -.0002465   .0001247    -1.98   0.048    -.0004909   -2.05e-06
+        dist |  -.0009766   .0000888   -11.00   0.000    -.0011506   -.0008026
+     dist_sq |   1.17e-08   3.98e-09     2.93   0.003     3.86e-09    1.95e-08
+   bla1_dist |   5.64e-07   7.20e-07     0.78   0.434    -8.48e-07    1.98e-06
+bla1_dist_sq |   1.34e-10   3.71e-11     3.62   0.000     6.16e-11    2.07e-10
+   imm1_dist |   3.82e-06   2.14e-06     1.79   0.074    -3.69e-07    8.01e-06
+imm1_dist_sq |   1.92e-10   1.03e-10     1.86   0.063    -1.05e-11    3.94e-10
+   sei1_dist |  -6.85e-06   4.62e-06    -1.48   0.138    -.0000159    2.20e-06
+sei1_dist_sq |   1.30e-09   1.96e-10     6.63   0.000     9.17e-10    1.69e-09
+------------------------------------------------------------------------------
+
+. *clogit, or
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/obsv-black-40-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-b
+> lack-40-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-black-40
+> -preds.csv saved
+
+. 
+. * load example data
+. import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-exa
+> mples-final.csv", clear
+(37 vars, 2,640 obs)
+
+. 
+. * predictions for hypothetical ED choice sets
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * over-write model data with predictions attached
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/ex-black-40-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-bla
+> ck-40-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-black-40-p
+> reds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *************
+. 
+. 
+. *** White immigrant sample, 1910-1920 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_wimm_20.csv", clear
+(74 vars, 4,022,841 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(43,935 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq bla1_pblack_ed bla1_pbla
+> ck_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pblack_ed sei1_pblack_ed_sq de
+> st_ed_pct_frnbrn dest_ed_pct_frnbrn_sq bla1_pfrnbrn_ed bla1_pfrnbrn_ed_sq imm
+> 1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_sq dest_ed_me
+> an_sei dest_ed_mean_sei_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_mse
+> i_ed_sq sei1_msei_ed sei1_msei_ed_sq dist dist_sq bla1_dist bla1_dist_sq imm1
+> _dist imm1_dist_sq sei1_dist sei1_dist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -84444.994  
+Iteration 1:   log likelihood = -84015.436  
+Iteration 2:   log likelihood =  -83973.05  
+Iteration 3:   log likelihood = -83971.134  
+Iteration 4:   log likelihood = -83970.596  
+Iteration 5:   log likelihood = -83970.353  
+Iteration 6:   log likelihood = -83970.349  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  3,978,906
+                                                LR chi2(29)       =   57991.70
+                                                Prob > chi2       =     0.0000
+Log likelihood = -83970.349                     Pseudo R2         =     0.2567
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |  -.0565085   .0114764    -4.92   0.000    -.0790019   -.0340151
+dest_ed~k_sq |  -.0001871   .0001901    -0.98   0.325    -.0005598    .0001855
+bla1_pblac~d |   .0017204   .0001304    13.19   0.000     .0014648    .0019761
+bla1_pblac~q |  -.0000125   1.91e-06    -6.54   0.000    -.0000162   -8.74e-06
+imm1_pblac~d |  -.0000486   .0001255    -0.39   0.698    -.0002945    .0001973
+imm1_pblac~q |   .0000127   2.04e-06     6.25   0.000     8.74e-06    .0000167
+sei1_pblac~d |    .001147   .0006399     1.79   0.073    -.0001071    .0024011
+sei1_pblac~q |   9.91e-06   .0000105     0.94   0.347    -.0000107    .0000306
+dest_ed_pc~n |   .1735239    .019484     8.91   0.000     .1353361    .2117118
+dest_ed~n_sq |  -.0054534   .0003179   -17.15   0.000    -.0060765   -.0048303
+bla1_pfrnb~d |  -.0014991   .0003524    -4.25   0.000    -.0021897   -.0008085
+bla1_pfrnb~q |   .0000373   5.97e-06     6.26   0.000     .0000256     .000049
+imm1_pfrnb~d |   .0017178   .0002145     8.01   0.000     .0012973    .0021382
+imm1_pfrnb~q |   .0000232   3.33e-06     6.97   0.000     .0000167    .0000298
+sei1_pfrnb~d |    -.00852   .0011318    -7.53   0.000    -.0107383   -.0063017
+sei1_pfrnb~q |   .0002012   .0000183    11.02   0.000     .0001654    .0002369
+dest_ed_me~i |  -.3716241   .0780961    -4.76   0.000    -.5246896   -.2185585
+dest_ed_me~q |  -.0102938   .0032751    -3.14   0.002     -.016713   -.0038747
+bla1_msei_ed |  -.0034968   .0012052    -2.90   0.004     -.005859   -.0011346
+bla1_msei_~q |   .0002106   .0000496     4.25   0.000     .0001134    .0003079
+imm1_msei_ed |   .0009731   .0008886     1.10   0.274    -.0007686    .0027148
+imm1_msei_~q |   .0001017   .0000385     2.64   0.008     .0000263    .0001772
+sei1_msei_ed |   .0639802    .004685    13.66   0.000     .0547977    .0731627
+sei1_msei_~q |  -.0009878    .000184    -5.37   0.000    -.0013485   -.0006271
+        dist |  -.0017355   .0000358   -48.41   0.000    -.0018057   -.0016652
+     dist_sq |   4.48e-08   1.80e-09    24.95   0.000     4.13e-08    4.84e-08
+   bla1_dist |   .0000105   7.09e-07    14.81   0.000     9.11e-06    .0000119
+bla1_dist_sq |  -4.50e-10   4.80e-11    -9.37   0.000    -5.44e-10   -3.56e-10
+   imm1_dist |   .0000151   3.86e-07    39.21   0.000     .0000144    .0000159
+imm1_dist_sq |  -3.57e-10   2.04e-11   -17.55   0.000    -3.97e-10   -3.17e-10
+   sei1_dist |   .0000294   2.09e-06    14.06   0.000     .0000253    .0000335
+sei1_dist_sq |   2.18e-11   1.03e-10     0.21   0.833    -1.80e-10    2.24e-10
+------------------------------------------------------------------------------
+
+. *clogit, or
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/obsv-wimm-20-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-w
+> imm-20-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-wimm-20-
+> preds.csv saved
+
+. 
+. * load example data
+. import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-exa
+> mples-final.csv", clear
+(37 vars, 2,640 obs)
+
+. 
+. * predictions for hypothetical ED choice sets
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * over-write model data with predictions attached
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/ex-wimm-20-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wim
+> m-20-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wimm-20-pr
+> eds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *** White immigrant sample, 1920-1930 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_wimm_30.csv", clear
+(74 vars, 2,271,714 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(16,567 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq bla1_pblack_ed bla1_pbla
+> ck_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pblack_ed sei1_pblack_ed_sq de
+> st_ed_pct_frnbrn dest_ed_pct_frnbrn_sq bla1_pfrnbrn_ed bla1_pfrnbrn_ed_sq imm
+> 1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_sq dest_ed_me
+> an_sei dest_ed_mean_sei_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_mse
+> i_ed_sq sei1_msei_ed sei1_msei_ed_sq dist dist_sq bla1_dist bla1_dist_sq imm1
+> _dist imm1_dist_sq sei1_dist sei1_dist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -65072.355  
+Iteration 1:   log likelihood =  -64462.99  
+Iteration 2:   log likelihood = -64332.036  
+Iteration 3:   log likelihood = -64295.951  
+Iteration 4:   log likelihood = -64292.854  
+Iteration 5:   log likelihood = -64292.841  
+Iteration 6:   log likelihood = -64292.841  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  2,255,147
+                                                LR chi2(29)       =   48097.02
+                                                Prob > chi2       =     0.0000
+Log likelihood = -64292.841                     Pseudo R2         =     0.2722
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |  -.0662536   .0086685    -7.64   0.000    -.0832436   -.0492637
+dest_ed~k_sq |  -.0002226   .0001327    -1.68   0.094    -.0004828    .0000376
+bla1_pblac~d |   .0013196   .0001024    12.89   0.000     .0011189    .0015203
+bla1_pblac~q |  -5.79e-06   1.39e-06    -4.18   0.000    -8.51e-06   -3.07e-06
+imm1_pblac~d |   .0003736    .000122     3.06   0.002     .0001344    .0006127
+imm1_pblac~q |   .0000112   1.91e-06     5.84   0.000     7.41e-06    .0000149
+sei1_pblac~d |   .0017168   .0005699     3.01   0.003     .0005997    .0028339
+sei1_pblac~q |   .0000278   8.50e-06     3.27   0.001     .0000112    .0000445
+dest_ed_pc~n |   .0106651   .0207644     0.51   0.608    -.0300324    .0513625
+dest_ed~n_sq |  -.0032609   .0003645    -8.95   0.000    -.0039753   -.0025465
+bla1_pfrnb~d |   .0007097   .0003518     2.02   0.044     .0000202    .0013993
+bla1_pfrnb~q |   7.57e-06   6.42e-06     1.18   0.238    -5.01e-06    .0000201
+imm1_pfrnb~d |   .0058688   .0003102    18.92   0.000     .0052608    .0064768
+imm1_pfrnb~q |  -.0000333   5.23e-06    -6.36   0.000    -.0000436   -.0000231
+sei1_pfrnb~d |  -.0018309   .0014126    -1.30   0.195    -.0045995    .0009378
+sei1_pfrnb~q |   .0001433   .0000242     5.92   0.000     .0000959    .0001908
+dest_ed_me~i |  -.6095872   .0575769   -10.59   0.000    -.7224359   -.4967385
+dest_ed_me~q |   .0044304   .0022223     1.99   0.046     .0000748    .0087861
+bla1_msei_ed |   .0012361   .0010662     1.16   0.246    -.0008536    .0033258
+bla1_msei_~q |   .0000253    .000041     0.62   0.537     -.000055    .0001056
+imm1_msei_ed |  -.0015803   .0009585    -1.65   0.099     -.003459    .0002984
+imm1_msei_~q |   .0001705   .0000372     4.58   0.000     .0000975    .0002435
+sei1_msei_ed |   .1206122   .0038392    31.42   0.000     .1130875    .1281369
+sei1_msei_~q |  -.0028753   .0001355   -21.22   0.000    -.0031408   -.0026098
+        dist |  -.0015562    .000028   -55.63   0.000     -.001611   -.0015013
+     dist_sq |   4.67e-08   1.42e-09    32.87   0.000     4.39e-08    4.94e-08
+   bla1_dist |   7.13e-06   5.08e-07    14.04   0.000     6.14e-06    8.13e-06
+bla1_dist_sq |  -3.06e-10   3.03e-11   -10.10   0.000    -3.65e-10   -2.46e-10
+   imm1_dist |   .0000114   3.93e-07    29.15   0.000     .0000107    .0000122
+imm1_dist_sq |  -2.75e-10   2.02e-11   -13.58   0.000    -3.14e-10   -2.35e-10
+   sei1_dist |   .0000477   1.91e-06    25.00   0.000      .000044    .0000515
+sei1_dist_sq |  -1.18e-09   1.00e-10   -11.75   0.000    -1.37e-09   -9.81e-10
+------------------------------------------------------------------------------
+
+. *clogit, or
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/obsv-wimm-30-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-w
+> imm-30-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-wimm-30-
+> preds.csv saved
+
+. 
+. * load example data
+. import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-exa
+> mples-final.csv", clear
+(37 vars, 2,640 obs)
+
+. 
+. * predictions for hypothetical ED choice sets
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * over-write model data with predictions attached
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/ex-wimm-30-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wim
+> m-30-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wimm-30-pr
+> eds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *** White immigrant sample, 1930-1940 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_wimm_40.csv", clear
+(74 vars, 4,498,143 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(4,563 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq bla1_pblack_ed bla1_pbla
+> ck_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pblack_ed sei1_pblack_ed_sq de
+> st_ed_pct_frnbrn dest_ed_pct_frnbrn_sq bla1_pfrnbrn_ed bla1_pfrnbrn_ed_sq imm
+> 1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_sq dest_ed_me
+> an_sei dest_ed_mean_sei_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_mse
+> i_ed_sq sei1_msei_ed sei1_msei_ed_sq dist dist_sq bla1_dist bla1_dist_sq imm1
+> _dist imm1_dist_sq sei1_dist sei1_dist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -70529.483  
+Iteration 1:   log likelihood = -69288.289  
+Iteration 2:   log likelihood = -69204.246  
+Iteration 3:   log likelihood = -69202.094  
+Iteration 4:   log likelihood = -69202.094  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  4,493,580
+                                                LR chi2(29)       =   92939.08
+                                                Prob > chi2       =     0.0000
+Log likelihood = -69202.094                     Pseudo R2         =     0.4017
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |  -.0884759   .0088158   -10.04   0.000    -.1057545   -.0711973
+dest_ed~k_sq |   -.000397    .000129    -3.08   0.002    -.0006498   -.0001442
+bla1_pblac~d |   .0018328   .0000924    19.83   0.000     .0016516    .0020139
+bla1_pblac~q |  -6.26e-06   1.22e-06    -5.14   0.000    -8.65e-06   -3.87e-06
+imm1_pblac~d |   .0005071   .0001701     2.98   0.003     .0001737    .0008405
+imm1_pblac~q |   .0000186   2.54e-06     7.33   0.000     .0000136    .0000236
+sei1_pblac~d |   .0045778   .0005157     8.88   0.000      .003567    .0055885
+sei1_pblac~q |   .0000102   7.31e-06     1.39   0.163    -4.14e-06    .0000245
+dest_ed_pc~n |  -.0153747   .0209123    -0.74   0.462     -.056362    .0256125
+dest_ed~n_sq |  -.0038114   .0004382    -8.70   0.000    -.0046702   -.0029525
+bla1_pfrnb~d |     .00071   .0003146     2.26   0.024     .0000935    .0013265
+bla1_pfrnb~q |   .0000264   6.79e-06     3.90   0.000     .0000131    .0000397
+imm1_pfrnb~d |   .0089151   .0004135    21.56   0.000     .0081046    .0097256
+imm1_pfrnb~q |  -.0000522   7.87e-06    -6.64   0.000    -.0000676   -.0000368
+sei1_pfrnb~d |   .0019872    .001309     1.52   0.129    -.0005784    .0045527
+sei1_pfrnb~q |   .0000497    .000028     1.77   0.077    -5.30e-06    .0001046
+dest_ed_me~i |  -.7192723   .0517304   -13.90   0.000     -.820662   -.6178825
+dest_ed_me~q |   .0041029    .001534     2.67   0.007     .0010964    .0071094
+bla1_msei_ed |   .0010469   .0006015     1.74   0.082     -.000132    .0022259
+bla1_msei_~q |   .0000656   .0000169     3.87   0.000     .0000324    .0000987
+imm1_msei_ed |   .0086612   .0010612     8.16   0.000     .0065813    .0107412
+imm1_msei_~q |  -.0001173     .00003    -3.91   0.000    -.0001761   -.0000585
+sei1_msei_ed |   .0789642   .0029669    26.62   0.000     .0731492    .0847792
+sei1_msei_~q |    -.00113   .0000809   -13.96   0.000    -.0012886   -.0009713
+        dist |  -.0019797   .0000291   -68.05   0.000    -.0020367   -.0019227
+     dist_sq |   5.85e-08   1.23e-09    47.40   0.000     5.61e-08    6.09e-08
+   bla1_dist |   .0000106   4.39e-07    24.10   0.000     9.71e-06    .0000114
+bla1_dist_sq |  -4.19e-10   2.17e-11   -19.27   0.000    -4.61e-10   -3.76e-10
+   imm1_dist |   .0000119   5.08e-07    23.49   0.000     .0000109    .0000129
+imm1_dist_sq |  -1.25e-10   2.30e-11    -5.44   0.000    -1.70e-10   -8.02e-11
+   sei1_dist |   .0000499   1.80e-06    27.73   0.000     .0000464    .0000534
+sei1_dist_sq |  -1.30e-09   7.90e-11   -16.41   0.000    -1.45e-09   -1.14e-09
+------------------------------------------------------------------------------
+
+. *clogit, or
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/obsv-wimm-40-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-w
+> imm-40-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-wimm-40-
+> preds.csv saved
+
+. 
+. * load example data
+. import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-exa
+> mples-final.csv", clear
+(37 vars, 2,640 obs)
+
+. 
+. * predictions for hypothetical ED choice sets
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * over-write model data with predictions attached
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/ex-wimm-40-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wim
+> m-40-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wimm-40-pr
+> eds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. ************
+. 
+. *** White native-born sample, 1910-1920 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_wnb_20.csv", clear
+(74 vars, 7,456,583 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(95,340 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq bla1_pblack_ed bla1_pbla
+> ck_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pblack_ed sei1_pblack_ed_sq de
+> st_ed_pct_frnbrn dest_ed_pct_frnbrn_sq bla1_pfrnbrn_ed bla1_pfrnbrn_ed_sq imm
+> 1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_sq dest_ed_me
+> an_sei dest_ed_mean_sei_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_mse
+> i_ed_sq sei1_msei_ed sei1_msei_ed_sq dist dist_sq bla1_dist bla1_dist_sq imm1
+> _dist imm1_dist_sq sei1_dist sei1_dist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -138076.78  
+Iteration 1:   log likelihood = -137480.97  
+Iteration 2:   log likelihood = -137454.67  
+Iteration 3:   log likelihood = -137454.04  
+Iteration 4:   log likelihood = -137454.04  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  7,361,243
+                                                LR chi2(29)       =  143092.07
+                                                Prob > chi2       =     0.0000
+Log likelihood = -137454.04                     Pseudo R2         =     0.3423
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |  -.0777255   .0098027    -7.93   0.000    -.0969383   -.0585126
+dest_ed~k_sq |   .0000695   .0001924     0.36   0.718    -.0003075    .0004466
+bla1_pblac~d |   .0024662   .0001188    20.76   0.000     .0022333     .002699
+bla1_pblac~q |  -.0000236   1.90e-06   -12.42   0.000    -.0000274   -.0000199
+imm1_pblac~d |   7.63e-06   .0001735     0.04   0.965    -.0003323    .0003476
+imm1_pblac~q |   3.32e-06   3.52e-06     0.94   0.346    -3.58e-06    .0000102
+sei1_pblac~d |   .0021143   .0005002     4.23   0.000     .0011338    .0030947
+sei1_pblac~q |  -3.47e-06   9.76e-06    -0.36   0.722    -.0000226    .0000157
+dest_ed_pc~n |   .1774932   .0173384    10.24   0.000     .1435106    .2114758
+dest_ed~n_sq |  -.0057591    .000336   -17.14   0.000    -.0064176   -.0051006
+bla1_pfrnb~d |  -.0023723   .0003889    -6.10   0.000    -.0031346     -.00161
+bla1_pfrnb~q |   .0000234   9.10e-06     2.57   0.010     5.59e-06    .0000413
+imm1_pfrnb~d |    .001745   .0002836     6.15   0.000     .0011892    .0023009
+imm1_pfrnb~q |   .0000104   4.86e-06     2.13   0.033     8.34e-07    .0000199
+sei1_pfrnb~d |  -.0124382    .000935   -13.30   0.000    -.0142708   -.0106057
+sei1_pfrnb~q |    .000261   .0000185    14.14   0.000     .0002248    .0002971
+dest_ed_me~i |  -.2220128   .0549158    -4.04   0.000    -.3296458   -.1143797
+dest_ed_me~q |  -.0120206   .0021445    -5.61   0.000    -.0162238   -.0078174
+bla1_msei_ed |  -.0022134   .0010498    -2.11   0.035     -.004271   -.0001557
+bla1_msei_~q |   .0001245   .0000417     2.99   0.003     .0000429    .0002062
+imm1_msei_ed |   .0023978   .0010971     2.19   0.029     .0002476     .004548
+imm1_msei_~q |  -.0000688   .0000454    -1.52   0.130    -.0001579    .0000202
+sei1_msei_ed |   .0463964   .0029638    15.65   0.000     .0405876    .0522053
+sei1_msei_~q |  -.0004123   .0001082    -3.81   0.000    -.0006244   -.0002002
+        dist |  -.0013979   .0000286   -48.84   0.000     -.001454   -.0013418
+     dist_sq |   3.00e-08   1.28e-09    23.41   0.000     2.75e-08    3.25e-08
+   bla1_dist |   3.20e-06   6.39e-07     5.00   0.000     1.94e-06    4.45e-06
+bla1_dist_sq |  -1.54e-10   3.96e-11    -3.89   0.000    -2.32e-10   -7.67e-11
+   imm1_dist |   4.53e-06   5.21e-07     8.70   0.000     3.51e-06    5.55e-06
+imm1_dist_sq |   1.00e-10   2.38e-11     4.22   0.000     5.37e-11    1.47e-10
+   sei1_dist |    .000018   1.51e-06    11.88   0.000      .000015    .0000209
+sei1_dist_sq |   4.55e-10   6.74e-11     6.75   0.000     3.22e-10    5.87e-10
+------------------------------------------------------------------------------
+
+. *clogit, or
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/obsv-wnb-20-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-w
+> nb-20-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-wnb-20-p
+> reds.csv saved
+
+. 
+. * load example data
+. import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-exa
+> mples-final.csv", clear
+(37 vars, 2,640 obs)
+
+. 
+. * predictions for hypothetical ED choice sets
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * over-write model data with predictions attached
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/ex-wnb-20-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wnb
+> -20-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wnb-20-pre
+> ds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *** White native-born sample, 1920-1930 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_wnb_30.csv", clear
+(74 vars, 3,787,268 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(48,846 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq bla1_pblack_ed bla1_pbla
+> ck_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pblack_ed sei1_pblack_ed_sq de
+> st_ed_pct_frnbrn dest_ed_pct_frnbrn_sq bla1_pfrnbrn_ed bla1_pfrnbrn_ed_sq imm
+> 1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_sq dest_ed_me
+> an_sei dest_ed_mean_sei_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_mse
+> i_ed_sq sei1_msei_ed sei1_msei_ed_sq dist dist_sq bla1_dist bla1_dist_sq imm1
+> _dist imm1_dist_sq sei1_dist sei1_dist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -100625.98  
+Iteration 1:   log likelihood = -100228.45  
+Iteration 2:   log likelihood = -100165.44  
+Iteration 3:   log likelihood = -100156.87  
+Iteration 4:   log likelihood = -100156.83  
+Iteration 5:   log likelihood = -100156.83  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  3,738,422
+                                                LR chi2(29)       =   92589.52
+                                                Prob > chi2       =     0.0000
+Log likelihood = -100156.83                     Pseudo R2         =     0.3161
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |  -.0562498   .0077339    -7.27   0.000    -.0714079   -.0410917
+dest_ed~k_sq |  -.0002385   .0001296    -1.84   0.066    -.0004924    .0000155
+bla1_pblac~d |   .0011566   .0000993    11.65   0.000      .000962    .0013513
+bla1_pblac~q |  -5.72e-06   1.41e-06    -4.05   0.000    -8.49e-06   -2.95e-06
+imm1_pblac~d |  -.0001849   .0001656    -1.12   0.264    -.0005095    .0001398
+imm1_pblac~q |   .0000123   2.86e-06     4.29   0.000     6.67e-06    .0000179
+sei1_pblac~d |   .0009882   .0004787     2.06   0.039       .00005    .0019264
+sei1_pblac~q |   .0000197   7.90e-06     2.49   0.013     4.22e-06    .0000352
+dest_ed_pc~n |   .0032141    .019301     0.17   0.868    -.0346152    .0410434
+dest_ed~n_sq |  -.0048423   .0004263   -11.36   0.000    -.0056777   -.0040068
+bla1_pfrnb~d |   .0007172   .0004124     1.74   0.082     -.000091    .0015254
+bla1_pfrnb~q |   7.35e-07   9.91e-06     0.07   0.941    -.0000187    .0000202
+imm1_pfrnb~d |   .0061713   .0003931    15.70   0.000     .0054007    .0069418
+imm1_pfrnb~q |  -.0000259   7.43e-06    -3.48   0.000    -.0000405   -.0000113
+sei1_pfrnb~d |  -.0062546    .001257    -4.98   0.000    -.0087182    -.003791
+sei1_pfrnb~q |   .0002414   .0000277     8.73   0.000     .0001872    .0002956
+dest_ed_me~i |   .1117164   .0532061     2.10   0.036     .0074343    .2159985
+dest_ed_me~q |  -.0191999   .0019829    -9.68   0.000    -.0230864   -.0153134
+bla1_msei_ed |  -.0041766   .0008863    -4.71   0.000    -.0059137   -.0024394
+bla1_msei_~q |   .0002084   .0000318     6.55   0.000      .000146    .0002708
+imm1_msei_ed |  -.0010196    .001225    -0.83   0.405    -.0034207    .0013814
+imm1_msei_~q |   .0001083   .0000467     2.32   0.021     .0000167    .0001998
+sei1_msei_ed |   .0545734   .0034346    15.89   0.000     .0478417    .0613051
+sei1_msei_~q |  -.0006768   .0001207    -5.61   0.000    -.0009134   -.0004402
+        dist |  -.0012892   .0000225   -57.27   0.000    -.0013333    -.001245
+     dist_sq |   3.48e-08   1.03e-09    33.86   0.000     3.28e-08    3.68e-08
+   bla1_dist |   5.44e-06   4.55e-07    11.96   0.000     4.55e-06    6.33e-06
+bla1_dist_sq |  -2.13e-10   2.41e-11    -8.82   0.000    -2.60e-10   -1.65e-10
+   imm1_dist |   6.18e-06   4.96e-07    12.46   0.000     5.20e-06    7.15e-06
+imm1_dist_sq |  -2.42e-11   2.30e-11    -1.05   0.294    -6.93e-11    2.10e-11
+   sei1_dist |   .0000313   1.43e-06    21.96   0.000     .0000285    .0000341
+sei1_dist_sq |  -5.52e-10   6.64e-11    -8.31   0.000    -6.82e-10   -4.22e-10
+------------------------------------------------------------------------------
+
+. *clogit, or
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/obsv-wnb-30-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-w
+> nb-30-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-wnb-30-p
+> reds.csv saved
+
+. 
+. * load example data
+. import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-exa
+> mples-final.csv", clear
+(37 vars, 2,640 obs)
+
+. 
+. * predictions for hypothetical ED choice sets
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * over-write model data with predictions attached
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/ex-wnb-30-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wnb
+> -30-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wnb-30-pre
+> ds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *** White native-born sample, 1930-1940 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_wnb_40.csv", clear
+(74 vars, 8,661,000 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(14,706 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq bla1_pblack_ed bla1_pbla
+> ck_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pblack_ed sei1_pblack_ed_sq de
+> st_ed_pct_frnbrn dest_ed_pct_frnbrn_sq bla1_pfrnbrn_ed bla1_pfrnbrn_ed_sq imm
+> 1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_sq dest_ed_me
+> an_sei dest_ed_mean_sei_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_mse
+> i_ed_sq sei1_msei_ed sei1_msei_ed_sq dist dist_sq bla1_dist bla1_dist_sq imm1
+> _dist imm1_dist_sq sei1_dist sei1_dist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -130375.14  
+Iteration 1:   log likelihood = -129154.12  
+Iteration 2:   log likelihood = -129112.88  
+Iteration 3:   log likelihood =  -129112.3  
+Iteration 4:   log likelihood =  -129112.3  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  8,646,294
+                                                LR chi2(29)       =  186975.17
+                                                Prob > chi2       =     0.0000
+Log likelihood =  -129112.3                     Pseudo R2         =     0.4200
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |  -.0556711   .0077991    -7.14   0.000    -.0709571   -.0403852
+dest_ed~k_sq |  -.0006114     .00012    -5.10   0.000    -.0008465   -.0003762
+bla1_pblac~d |   .0014167   .0000818    17.32   0.000     .0012564    .0015769
+bla1_pblac~q |  -5.95e-06   1.10e-06    -5.40   0.000    -8.10e-06   -3.79e-06
+imm1_pblac~d |   .0000311    .000199     0.16   0.876     -.000359    .0004211
+imm1_pblac~q |   .0000204   3.11e-06     6.58   0.000     .0000144    .0000265
+sei1_pblac~d |   .0021558    .000416     5.18   0.000     .0013404    .0029712
+sei1_pblac~q |   .0000215   6.26e-06     3.44   0.001     9.27e-06    .0000338
+dest_ed_pc~n |  -.1291551   .0182432    -7.08   0.000     -.164911   -.0933991
+dest_ed~n_sq |  -.0053927   .0004804   -11.23   0.000    -.0063343   -.0044511
+bla1_pfrnb~d |  -.0015388   .0003106    -4.95   0.000    -.0021476     -.00093
+bla1_pfrnb~q |   .0000873   8.21e-06    10.64   0.000     .0000713    .0001034
+imm1_pfrnb~d |   .0127774   .0004269    29.93   0.000     .0119407     .013614
+imm1_pfrnb~q |  -.0000826   9.03e-06    -9.15   0.000    -.0001003   -.0000649
+sei1_pfrnb~d |   .0024521   .0011043     2.22   0.026     .0002877    .0046165
+sei1_pfrnb~q |   .0001154     .00003     3.85   0.000     .0000566    .0001742
+dest_ed_me~i |  -.2026834   .0379684    -5.34   0.000    -.2771002   -.1282667
+dest_ed_me~q |  -.0077469   .0010816    -7.16   0.000    -.0098667   -.0056271
+bla1_msei_ed |  -.0016402   .0005594    -2.93   0.003    -.0027366   -.0005438
+bla1_msei_~q |   .0001011   .0000161     6.27   0.000     .0000695    .0001326
+imm1_msei_ed |   .0025697   .0010678     2.41   0.016     .0004769    .0046626
+imm1_msei_~q |    .000032   .0000298     1.07   0.283    -.0000264    .0000904
+sei1_msei_ed |   .0472851   .0019653    24.06   0.000     .0434332    .0511371
+sei1_msei_~q |  -.0004021    .000051    -7.88   0.000     -.000502   -.0003021
+        dist |  -.0014024    .000024   -58.53   0.000    -.0014493   -.0013554
+     dist_sq |   3.66e-08   9.22e-10    39.67   0.000     3.48e-08    3.84e-08
+   bla1_dist |   7.17e-06   3.78e-07    18.96   0.000     6.43e-06    7.92e-06
+bla1_dist_sq |  -2.52e-10   1.61e-11   -15.65   0.000    -2.83e-10   -2.20e-10
+   imm1_dist |   3.85e-06   6.08e-07     6.33   0.000     2.66e-06    5.04e-06
+imm1_dist_sq |   1.74e-10   2.52e-11     6.93   0.000     1.25e-10    2.24e-10
+   sei1_dist |   .0000163   1.36e-06    11.93   0.000     .0000136    .0000189
+sei1_dist_sq |  -4.57e-11   5.53e-11    -0.83   0.408    -1.54e-10    6.26e-11
+------------------------------------------------------------------------------
+
+. *clogit, or
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/obsv-wnb-40-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-w
+> nb-40-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/obsv-wnb-40-p
+> reds.csv saved
+
+. 
+. * load example data
+. import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-exa
+> mples-final.csv", clear
+(37 vars, 2,640 obs)
+
+. 
+. * predictions for hypothetical ED choice sets
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * over-write model data with predictions attached
+. export delim using "/home/bbellman/census-linking/data/for_models/dc-final-pr
+> eds/ex-wnb-40-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wnb
+> -40-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc-final-preds/ex-wnb-40-pre
+> ds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  /home/bbellman/census-linking/Stata/final/deadline-models.log
+  log type:  text
+ closed on:  14 Aug 2019, 19:18:32
+-------------------------------------------------------------------------------

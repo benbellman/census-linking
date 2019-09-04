@@ -1,0 +1,51 @@
+here() starts at /home/bbellman/census-linking
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Read 35.6% of 449106 rowsRead 66.8% of 449106 rowsRead 98.0% of 449106 rowsRead 449106 rows and 81 (of 81) columns from 0.198 GB file in 00:00:05
+Read 74.6% of 361803 rowsRead 361803 rows and 81 (of 81) columns from 0.146 GB file in 00:00:03
+Read 17.2% of 1163510 rowsRead 30.9% of 1163510 rowsRead 44.7% of 1163510 rowsRead 58.4% of 1163510 rowsRead 72.2% of 1163510 rowsRead 85.9% of 1163510 rowsRead 99.7% of 1163510 rowsRead 1163510 rows and 81 (of 81) columns from 0.442 GB file in 00:00:09
+Warning messages:
+1: `as_dictionary()` is soft-deprecated as of rlang 0.3.0.
+Please use `as_data_pronoun()` instead
+This warning is displayed once per session. 
+2: `new_overscope()` is soft-deprecated as of rlang 0.2.0.
+Please use `new_data_mask()` instead
+This warning is displayed once per session. 
+3: The `parent` argument of `new_data_mask()` is deprecated.
+The parent of the data mask is determined from either:
+
+  * The `env` argument of `eval_tidy()`
+  * Quosure environments when applicable
+This warning is displayed once per session. 
+4: `overscope_clean()` is soft-deprecated as of rlang 0.2.0.
+This warning is displayed once per session. 
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+Read 0.0% of 3978811 rowsRead 3.5% of 3978811 rowsRead 7.0% of 3978811 rowsRead 10.8% of 3978811 rowsRead 14.6% of 3978811 rowsRead 18.3% of 3978811 rowsRead 21.9% of 3978811 rowsRead 25.6% of 3978811 rowsRead 29.4% of 3978811 rowsRead 33.2% of 3978811 rowsRead 36.7% of 3978811 rowsRead 40.2% of 3978811 rowsRead 43.7% of 3978811 rowsRead 47.3% of 3978811 rowsRead 50.8% of 3978811 rowsRead 54.5% of 3978811 rowsRead 58.1% of 3978811 rowsRead 61.8% of 3978811 rowsRead 65.3% of 3978811 rowsRead 69.1% of 3978811 rowsRead 72.9% of 3978811 rowsRead 76.4% of 3978811 rowsRead 79.9% of 3978811 rowsRead 82.9% of 3978811 rowsRead 86.5% of 3978811 rowsRead 90.0% of 3978811 rowsRead 93.5% of 3978811 rowsRead 97.0% of 3978811 rowsRead 3978811 rows and 81 (of 81) columns from 1.689 GB file in 00:00:32
+Read 1.3% of 2255086 rowsRead 8.0% of 2255086 rowsRead 14.6% of 2255086 rowsRead 21.3% of 2255086 rowsRead 27.9% of 2255086 rowsRead 34.6% of 2255086 rowsRead 40.4% of 2255086 rowsRead 47.0% of 2255086 rowsRead 53.7% of 2255086 rowsRead 60.3% of 2255086 rowsRead 67.0% of 2255086 rowsRead 73.6% of 2255086 rowsRead 80.3% of 2255086 rowsRead 86.9% of 2255086 rowsRead 93.6% of 2255086 rowsRead 2255086 rows and 81 (of 81) columns from 0.912 GB file in 00:00:18
+Read 0.0% of 4492762 rowsRead 3.3% of 4492762 rowsRead 6.7% of 4492762 rowsRead 10.0% of 4492762 rowsRead 13.4% of 4492762 rowsRead 16.7% of 4492762 rowsRead 20.0% of 4492762 rowsRead 23.1% of 4492762 rowsRead 26.5% of 4492762 rowsRead 29.8% of 4492762 rowsRead 33.2% of 4492762 rowsRead 36.5% of 4492762 rowsRead 39.4% of 4492762 rowsRead 42.7% of 4492762 rowsRead 46.1% of 4492762 rowsRead 49.4% of 4492762 rowsRead 52.8% of 4492762 rowsRead 56.1% of 4492762 rowsRead 59.4% of 4492762 rowsRead 62.8% of 4492762 rowsRead 66.1% of 4492762 rowsRead 69.4% of 4492762 rowsRead 72.8% of 4492762 rowsRead 76.1% of 4492762 rowsRead 79.5% of 4492762 rowsRead 82.8% of 4492762 rowsRead 86.1% of 4492762 rowsRead 89.5% of 4492762 rowsRead 92.8% of 4492762 rowsRead 96.2% of 4492762 rowsRead 99.7% of 4492762 rowsRead 4492762 rows and 81 (of 81) columns from 1.826 GB file in 00:00:35
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+`geom_smooth()` using method = 'gam'
+Read 0.0% of 7361442 rowsRead 1.9% of 7361442 rowsRead 3.7% of 7361442 rowsRead 5.6% of 7361442 rowsRead 7.5% of 7361442 rowsRead 9.4% of 7361442 rowsRead 11.4% of 7361442 rowsRead 13.4% of 7361442 rowsRead 15.5% of 7361442 rowsRead 17.5% of 7361442 rowsRead 19.4% of 7361442 rowsRead 21.3% of 7361442 rowsRead 23.4% of 7361442 rowsRead 25.4% of 7361442 rowsRead 27.4% of 7361442 rowsRead 29.5% of 7361442 rowsRead 31.5% of 7361442 rowsRead 33.4% of 7361442 rowsRead 35.5% of 7361442 rowsRead 37.5% of 7361442 rowsRead 39.1% of 7361442 rowsRead 41.0% of 7361442 rowsRead 43.1% of 7361442 rowsRead 45.0% of 7361442 rowsRead 47.0% of 7361442 rowsRead 48.9% of 7361442 rowsRead 50.8% of 7361442 rowsRead 52.8% of 7361442 rowsRead 54.9% of 7361442 rowsRead 56.8% of 7361442 rowsRead 58.8% of 7361442 rowsRead 60.7% of 7361442 rowsRead 62.6% of 7361442 rowsRead 64.5% of 7361442 rowsRead 66.6% of 7361442 rowsRead 68.6% of 7361442 rowsRead 70.6% of 7361442 rowsRead 72.5% of 7361442 rowsRead 74.4% of 7361442 rowsRead 76.5% of 7361442 rowsRead 78.4% of 7361442 rowsRead 80.4% of 7361442 rowsRead 82.3% of 7361442 rowsRead 84.4% of 7361442 rowsRead 86.0% of 7361442 rowsRead 88.0% of 7361442 rowsRead 90.1% of 7361442 rowsRead 92.1% of 7361442 rowsRead 94.1% of 7361442 rowsRead 96.0% of 7361442 rowsRead 97.9% of 7361442 rowsRead 99.8% of 7361442 rowsRead 7361442 rows and 81 (of 81) columns from 3.077 GB file in 00:00:58
+Read 0.0% of 3738528 rowsRead 4.0% of 3738528 rowsRead 8.0% of 3738528 rowsRead 12.3% of 3738528 rowsRead 16.3% of 3738528 rowsRead 20.3% of 3738528 rowsRead 24.3% of 3738528 rowsRead 28.4% of 3738528 rowsRead 32.4% of 3738528 rowsRead 36.4% of 3738528 rowsRead 40.4% of 3738528 rowsRead 44.4% of 3738528 rowsRead 48.4% of 3738528 rowsRead 52.4% of 3738528 rowsRead 56.4% of 3738528 rowsRead 60.7% of 3738528 rowsRead 64.7% of 3738528 rowsRead 68.7% of 3738528 rowsRead 72.0% of 3738528 rowsRead 76.0% of 3738528 rowsRead 80.0% of 3738528 rowsRead 84.0% of 3738528 rowsRead 88.0% of 3738528 rowsRead 92.0% of 3738528 rowsRead 96.0% of 3738528 rowsRead 3738528 rows and 81 (of 81) columns from 1.484 GB file in 00:00:29
+Error in import(here("data", "for_models", "dc_example_preds", "obsv-wnb-40-preds-cats.csv")) : 
+  No such file
+Calls: %>% -> eval -> eval -> import
+Execution halted

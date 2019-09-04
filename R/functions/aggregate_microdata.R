@@ -9,8 +9,6 @@ aggregate_microdata <- function(m, unit){
   unit <- enquo(unit)
   
   # Make vector of USA birthplaces
-  
-  
   test <- load_microdata(m, formatted = F) %>% 
   # create dummy chars for different categories/groups (race, sex, age, occ/ind, married)
   mutate(
@@ -38,7 +36,9 @@ aggregate_microdata <- function(m, unit){
     age_70_74 = if_else(between(age, 70, 74), 1, 0),
     age_75_up = if_else(age > 74, 1, 0),
     # nativity
-    frnbrn = if_else(nativity == 5, 1, 0)
+    frnbrn = if_else(bpl >= 15000, 1, 0),
+    # replace SEI = 0 with missing value
+    sei = ifelse(sei == 0, NA, sei)
   ) %>% 
   group_by(!!unit, year) %>% 
   summarise(

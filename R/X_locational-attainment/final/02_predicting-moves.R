@@ -10,6 +10,7 @@ library(sf)
 library(car)
 library(readr)
 library(tidyr)
+library(ghibli)
 
 source(here("R", "functions", "all_row_combos.R"))
 source(here("R", "functions", "aggregate_microdata.R"))
@@ -18,19 +19,43 @@ linked <- import(here("data", "for_models", "phl_loc_attain.csv")) %>%
   as_tibble() %>% 
   filter(sei1 > 0 & not_hhh1 == 0) %>% 
   # if the address is the same in both years, the family did not move
-  mutate(moved = if_else(both_same == 1, 0, 1),
+  mutate(#moved = if_else(both_same == 1, 0, 1),
          woman = sex1 - 1,
          married = if_else(marst1 < 3, 1, 0),
-         #age_sq1 = age1 * age1,
+         age_sq1 = age1 * age1,
          #hh_n_adults1 = hh_size1 - hh_n_kids1,
          kids_1_to_2 = if_else(hh_n_kids1 > 0 & hh_n_kids1 < 3, 1, 0),
          kids_3_up = if_else(hh_n_kids1 >= 3, 1, 0),
          # create squared term for ed % black and ed % foreign born
          ed_pct_black_sq1 = ed_pct_black1 * ed_pct_black1,
          ed_pct_frnbrn_sq1 = ed_pct_frnbrn1 * ed_pct_frnbrn1,
+         ed_mean_sei_sq1 = ed_mean_sei1 * ed_mean_sei1,
          lag_pct_black_sq1 = lag_pct_black1 * lag_pct_black1,
          lag_pct_frnbrn_sq1 = lag_pct_frnbrn1 * lag_pct_frnbrn1)
 
+# split data by year for merging with ED distances
+data_list <- list(
+  filter(linked, year1 == 1910),
+  filter(linked, year1 == 1920),
+  filter(linked, year1 == 1930)
+)
+
+# merge with pre-calcualted ED distances
+list(
+  here("data", "ed_distances_10_20.csv"),
+  here("data", "ed_distances_20_30.csv"),
+  here("data", "ed_distances_30_40.csv")
+) %>% 
+  map(import) %>% 
+  map(rename, ed2 = dest_ed) %>% 
+  map(mutate, ed2 = as.character(ed2)) %>% 
+  map2(data_list, inner_join) %>% 
+  map(as_tibble) %>% 
+  bind_rows() -> linked
+
+# mark as moved if distance is greater than 750 m
+linked <- linked %>% 
+  mutate(moved = if_else(dist > 750, 1, 0))
 
 nested <- linked %>%
   group_by(race_cat, year1) %>% 
@@ -53,10 +78,14 @@ ed_fm <- moved ~
   ed_pct_black1 + ed_pct_frnbrn1 + ed_mean_sei1 +
   hh_max_sei1*ed_pct_black1 + hh_max_sei1*ed_pct_frnbrn1 + hh_max_sei1*ed_mean_sei1
 
-lag_fm <- moved ~
-  woman + married + age1 + hh_max_sei1 + kids_1_to_2 + kids_3_up +
-  lag_pct_black1 + lag_pct_frnbrn1 + lag_mean_sei1 +
-  hh_max_sei1*lag_pct_black1 + hh_max_sei1*lag_pct_frnbrn1 + hh_max_sei1*lag_mean_sei1
+ed_fm_sq <- moved ~
+  woman + married + age1 + age_sq1 + hh_max_sei1 + kids_1_to_2 + kids_3_up +
+  ed_pct_black1 + ed_pct_black_sq1 +
+  ed_pct_frnbrn1 + ed_pct_frnbrn_sq1 +
+  ed_mean_sei1 + ed_mean_sei_sq1 +
+  hh_max_sei1*ed_pct_black1 + hh_max_sei1*ed_pct_black_sq1 + 
+  hh_max_sei1*ed_pct_frnbrn1 + hh_max_sei1*ed_pct_frnbrn_sq1 + 
+  hh_max_sei1*ed_mean_sei1 + hh_max_sei1*ed_mean_sei_sq1
 
 ed_lag_fm <- moved ~
   woman + married + age1 + hh_max_sei1 + kids_1_to_2 + kids_3_up +
@@ -67,9 +96,9 @@ ed_lag_fm <- moved ~
 # combine all data with all model specifications
 all_data <- bind_cols(
   bind_rows(rep(list(nested), 3)),
-  tibble(spec = c(rep(list(ed_fm), 9), rep(list(lag_fm), 9), rep(list(ed_lag_fm), 9)),
-         spec_type = factor(c(rep("ED", 9), rep("Lagged", 9), rep("ED and Lagged", 9)), 
-                            levels = c("ED", "Lagged", "ED and Lagged")))
+  tibble(spec = c(rep(list(ed_fm), 9), rep(list(ed_fm_sq), 9), rep(list(ed_lag_fm), 9)),
+         spec_type = factor(c(rep("ED", 9), rep("ED quad", 9), rep("ED and Lagged", 9)), 
+                            levels = c("ED", "ED quad", "ED and Lagged")))
 )
 
 
@@ -104,7 +133,7 @@ fit <- select(all_data_models, race_cat, year1, spec_type, glance) %>%
   unnest(cols = glance)
 
 # manually look at fit statistics within groups and across years
-#filter(fit, race_cat == "Black" & year1 == 1930)
+#filter(fit, race_cat == "White Imm" & year1 == 1930)
 
 # get a dataframe of VIF
 #vif_tbl <- select(all_data_models, race_cat, year1, spec_type, vif) %>% 
@@ -156,26 +185,29 @@ write_csv(aic_tables[[3]], here("tables", "chp2", "wnb_logit_spec_aic.csv"))
 
 # full table of coefficients of lag spec for all groups + years
 coefs %>% 
-  filter(spec_type == "ED") %>% 
+  filter(spec_type == "ED quad") %>% 
   select(race_cat, year1, term, or) %>% 
   dcast(term ~ race_cat + year1) -> lag_est
 names(lag_est)[-1] <- paste0(names(lag_est)[-1], "_est")
 
 coefs %>% 
-  filter(spec_type == "ED") %>% 
+  filter(spec_type == "ED quad") %>% 
   select(race_cat, year1, term, p.value) %>% 
   dcast(term ~ race_cat + year1) -> lag_pval
 names(lag_pval)[-1] <- paste0(names(lag_pval)[-1], "_pval")
 
 lag_coefs <- right_join(lag_est, lag_pval)
 lag_coefs <- cbind(lag_coefs[,1], lag_coefs[,names(lag_coefs[,-1])[order(names(lag_coefs[,-1]))]])
-lag_coefs <- lag_coefs[c(1, 13, 12, 2, 10, 11, 6, 4, 5, 3, 8, 9, 7),]
+lag_coefs <- lag_coefs[c(1, 20, 19, 3, 2, 
+                         17, 18, 10, 
+                         7, 6, 9, 8, 5, 4,
+                         14, 13, 16, 15, 12, 11),]
 
-write_csv(lag_coefs, here("tables", "chp2", "logit_coefs_or.csv"))
+write_csv(lag_coefs, here("tables", "chp2", "logit_coefs_or_750m_sq.csv"))
 
 
 # keep only the ED-level models for predictions
-all_data_models <- filter(all_data_models, spec_type == "ED")
+all_data_models <- filter(all_data_models, spec_type == "ED quad")
 
 
 #### Predicted probabilities of moving ####
@@ -202,21 +234,23 @@ select(linked, race_cat, year1, model_vars) %>%
 ex1 <- tibble(
   woman = 0,
   married = 1,
-  age1 = 35,
+  age1 = 40,
+  age_sq1 = 35*35,
   kids_1_to_2 = 1,
   kids_3_up = 0,
   hh_max_sei1 = 20,
-  ex = "Age = 35, SEI = 20"
+  ex = "SEI = 20"
 )
 
 ex2 <- tibble(
   woman = 0,
   married = 1,
-  age1 = 50,
+  age1 = 40,
+  age_sq1 = 50*50,
   kids_1_to_2 = 1,
   kids_3_up = 0,
   hh_max_sei1 = 55,
-  ex = "Age = 50, SEI = 55"
+  ex = "SEI = 55"
 )
 
 # function for making and processing predicted probabilities
@@ -254,7 +288,12 @@ ed <- c(
   here("data", "ed_data", "ED_data_1930.csv")
 ) %>% 
   map(import) %>% 
-  bind_rows()
+  bind_rows() %>% 
+  mutate(
+    ed_pct_black_sq = ed_pct_black * ed_pct_black,
+    ed_pct_frnbrn_sq = ed_pct_frnbrn * ed_pct_frnbrn,
+    ed_mean_sei_sq = ed_mean_sei * ed_mean_sei
+  )
 names(ed) <- paste0(names(ed), "1")
 
 # load polygons of 1910-1930 EDs
@@ -325,9 +364,11 @@ select(predictions1, year1, race_cat, ex_pred) %>%
   mutate(
     prob_int = factor(
       case_when(
-        prob < 0.8 ~ 1,
-        prob >= 0.8 & prob < 0.9 ~ 2,
-        prob >= 0.9 ~ 3
+        prob < 0.25 ~ 1,
+        prob >= 0.25 & prob < 0.375 ~ 2,
+        prob >= 0.375 & prob < 0.5 ~ 3,
+        prob >= 0.5 & prob < 0.625 ~ 4,
+        prob >= 0.625 ~ 5
       )
     )
   ) -> ed_move_preds1
@@ -341,9 +382,11 @@ select(predictions2, year1, race_cat, ex_pred) %>%
   mutate(
     prob_int = factor(
       case_when(
-        prob < 0.8 ~ 1,
-        prob >= 0.8 & prob < 0.9 ~ 2,
-        prob >= 0.9 ~ 3
+        prob < 0.25 ~ 1,
+        prob >= 0.25 & prob < 0.375 ~ 2,
+        prob >= 0.375 & prob < 0.5 ~ 3,
+        prob >= 0.5 & prob < 0.625 ~ 4,
+        prob >= 0.625 ~ 5
       )
     )
   ) -> ed_move_preds2
@@ -359,22 +402,22 @@ ggplot(ed_move_preds1) +
   geom_sf(aes(fill = prob_int), lwd = 0, col = "white") +
   scale_fill_brewer("Predicted\nProbability", 
                     palette = "BuPu", 
-                    labels = c("< 0.8", "0.8 to 0.9", ">= 0.9")) +
+                    labels = c("< 0.25", "0.25 to 0.375", "0.375 to 0.5", "0.5 to 0.625", ">= 0.625")) +
   theme_minimal() +
   theme(axis.text = element_blank()) +
   facet_grid(race_cat ~ year1) +
-  ggsave(here("figures", "chp2", "logit", "predicted_move_probabilities_ex1_ed.png"), height = 7, width = 7)
+  ggsave(here("figures", "chp2", "logit", "final-predicted_move_probabilities_ex1_ed_750sq.png"), height = 7, width = 7)
 
 
 ggplot(ed_move_preds2) +
   geom_sf(aes(fill = prob_int), lwd = 0, col = "white") +
   scale_fill_brewer("Predicted\nProbability", 
                     palette = "BuPu", 
-                    labels = c("< 0.8", "0.8 to 0.9", ">= 0.9")) +
+                    labels = c("< 0.25", "0.25 to 0.375", "0.375 to 0.5", "0.5 to 0.625", ">= 0.625")) +
   theme_minimal() +
   theme(axis.text = element_blank()) +
   facet_grid(race_cat ~ year1) +
-  ggsave(here("figures", "chp2", "logit", "predicted_move_probabilities_ex2_ed.png"), height = 7, width = 7)
+  ggsave(here("figures", "chp2", "logit", "final-predicted_move_probabilities_ex2_ed_750sq.png"), height = 7, width = 7)
 
 
 
@@ -391,19 +434,34 @@ ex_ed_pblack <- tibble(
   ed_pct_black1 = seq(0, 100, 2),
   ed_pct_frnbrn1 = rep(15, 51),
   ed_mean_sei1 = rep(12, 51)
-)
+) %>% 
+  mutate(
+    ed_pct_black_sq1 = ed_pct_black1 * ed_pct_black1,
+    ed_pct_frnbrn_sq1 = ed_pct_frnbrn1 * ed_pct_frnbrn1,
+    ed_mean_sei_sq1 = ed_mean_sei1 * ed_mean_sei1
+  )
 
 ex_ed_pfrnbrn <- tibble(
   ed_pct_black1 = rep(2, 51),
   ed_pct_frnbrn1 = seq(0, 100, 2),
   ed_mean_sei1 = rep(12, 51)
-)
+) %>% 
+  mutate(
+    ed_pct_black_sq1 = ed_pct_black1 * ed_pct_black1,
+    ed_pct_frnbrn_sq1 = ed_pct_frnbrn1 * ed_pct_frnbrn1,
+    ed_mean_sei_sq1 = ed_mean_sei1 * ed_mean_sei1
+  )
 
 ex_ed_msei <- tibble(
   ed_pct_black1 = rep(2, 51),
   ed_pct_frnbrn1 = rep(15, 51),
   ed_mean_sei1 = seq(0, 50, 1)
-)
+) %>% 
+  mutate(
+    ed_pct_black_sq1 = ed_pct_black1 * ed_pct_black1,
+    ed_pct_frnbrn_sq1 = ed_pct_frnbrn1 * ed_pct_frnbrn1,
+    ed_mean_sei_sq1 = ed_mean_sei1 * ed_mean_sei1
+  )
 
 # combine hypothetical EDs and households
 ex_ed_pblack <- all_row_combos(rbind(ex1, ex2), ex_ed_pblack)
@@ -412,7 +470,7 @@ ex_ed_msei <- all_row_combos(rbind(ex1, ex2), ex_ed_msei)
 
 # combine with 9 models for groups and years
 all_data_models %>% 
-  filter(spec_type == "ED") %>% 
+  #filter(spec_type == "ED") %>% 
   select(race_cat, year1, model) %>% 
   mutate(ex_data = rep(list(ex_ed_pblack), 9),
          pred = map2(model, ex_data, my_predict)) %>% 
@@ -420,7 +478,7 @@ all_data_models %>%
   unnest(cols = c(ex_data, pred)) -> ed_pblack_preds
 
 all_data_models %>% 
-  filter(spec_type == "ED") %>% 
+  #filter(spec_type == "ED") %>% 
   select(race_cat, year1, model) %>% 
   mutate(ex_data = rep(list(ex_ed_pfrnbrn), 9),
          pred = map2(model, ex_data, my_predict)) %>% 
@@ -428,7 +486,7 @@ all_data_models %>%
   unnest(cols = c(ex_data, pred)) -> ed_pfrnbrn_preds
 
 all_data_models %>% 
-  filter(spec_type == "ED") %>% 
+  #filter(spec_type == "ED") %>% 
   select(race_cat, year1, model) %>% 
   mutate(ex_data = rep(list(ex_ed_msei), 9),
          pred = map2(model, ex_data, my_predict)) %>% 
@@ -447,7 +505,8 @@ ggplot(ed_pblack_preds) +
        y = "Probability of moving",
        col = "",
        lty = "") +
-  facet_wrap(~ year1) +
+  facet_grid(.~ year1) +
+  xlim(0, 50) +
   ggsave(here("figures", "chp2", "logit", "pblack_ex_preds_ed.pdf"), height = 3, width = 6)
 
 ggplot(ed_pfrnbrn_preds) +
@@ -456,7 +515,8 @@ ggplot(ed_pfrnbrn_preds) +
        y = "Probability of moving",
        col = "",
        lty = "") +
-  facet_wrap(~ year1) +
+  facet_grid(. ~ year1) +
+  xlim(0, 65) +
   ggsave(here("figures", "chp2", "logit", "pfrnbrn_ex_preds_ed.pdf"), height = 3, width = 6)
 
 ggplot(ed_msei_preds) +
@@ -465,7 +525,8 @@ ggplot(ed_msei_preds) +
        y = "Probability of moving",
        col = "",
        lty = "") +
-  facet_wrap(~ year1) +
+  facet_grid(. ~ year1) +
+  xlim(0, 30) +
   ggsave(here("figures", "chp2", "logit", "msei_ex_preds_ed.pdf"), height = 3, width = 6)
 
 
@@ -475,82 +536,11 @@ ggplot(ed_msei_preds) +
 
 
 
-
-#### Descriptive ideas ####
-
-
-# looking at distribution summaries of vars across race categories and years
-# I can only do this for a couple variables (probably these)
-# I'll have to do a full 9-column table of descriptive stats (mean or %)
-
-ed_lag_means <- linked %>% 
-  group_by(race_cat, year1) %>% 
-  summarise(
-    ed_pct_black = mean(ed_pct_black1, na.rm = T),
-    lag_pct_black = mean(lag_pct_black1, na.rm = T),
-    ed_pct_frnbrn = mean(ed_pct_frnbrn1, na.rm = T),
-    lag_pct_frnbrn = mean(lag_pct_frnbrn1, na.rm = T)
-  ) %>% 
-  filter(race_cat != "Other")
-
-# run the plots
-# I wanna re-do these with the full microdata for all years
-# That will be a great piece of my descriptive analysis
-
-# ED % black
+### let's make a map giving visual context for move distance of 750 meters
+# can I even make axis limits work with sf objects?
 ggplot() +
-  geom_density(data = filter(linked, race_cat != "Other"), 
-               aes(x = ed_pct_black1, col = factor(year1))) +
-  geom_vline(data = ed_lag_means, 
-             aes(xintercept = ed_pct_black, col = factor(year1))) +
-  xlim(c(0,50)) +
-  facet_grid(race_cat ~ .) +
-  labs(title = "Kernel density and mean values",
-       subtitle = "% black in ED",
-       x = "ED % black", y = "Density", col = NULL)
-
-# Adjacent ED % black
-ggplot() +
-  geom_density(data = filter(linked, race_cat != "Other"), 
-               aes(x = lag_pct_black1, col = factor(year1))) +
-  geom_vline(data = ed_lag_means, 
-             aes(xintercept = lag_pct_black, col = factor(year1))) +
-  xlim(c(0,50)) +
-  facet_grid(race_cat ~ .) +
-  labs(title = "Kernel density and mean values",
-       subtitle = "% black in Adjacent EDs",
-       x = "Adjacent ED % black", y = "Density", col = NULL)
-
-
-# ED % foreign-born
-ggplot() +
-  geom_density(data = filter(linked, race_cat != "Other"), 
-               aes(x = ed_pct_frnbrn1, col = factor(year1))) +
-  geom_vline(data = ed_lag_means, 
-             aes(xintercept = ed_pct_frnbrn, col = factor(year1))) +
-  xlim(c(0,50)) +
-  facet_grid(race_cat ~ .) +
-  labs(title = "Kernel density and mean values",
-       subtitle = "% foreign-born in ED",
-       x = "ED % foreign-born", y = "Density", col = NULL)
-
-# Adjacent ED % foreign-born
-ggplot() +
-  geom_density(data = filter(linked, race_cat != "Other"), 
-               aes(x = lag_pct_frnbrn1, col = factor(year1))) +
-  geom_vline(data = ed_lag_means, 
-             aes(xintercept = lag_pct_frnbrn, col = factor(year1))) +
-  xlim(c(0,50)) +
-  facet_grid(race_cat ~ .) +
-  labs(title = "Kernel density and mean values",
-       subtitle = "% foreign-born in Adjacent EDs",
-       x = "Adjacent ED % foreign-born", y = "Density", col = NULL)
-
-
-
-
-
-
+  geom_sf(data = phl10) +
+  coord_sf(xlim = c(-75.25, -75.15), ylim = c(39.95, 40.05))
 
 
 

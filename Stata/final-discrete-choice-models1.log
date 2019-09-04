@@ -1,0 +1,688 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/bbellman/census-linking/Stata/final-discrete-choice-models.l
+> og
+  log type:  text
+ opened on:   5 Aug 2019, 12:34:22
+
+. 
+. **********
+. 
+. 
+. *** Black sample, 1910-1920 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_black_20.csv", clear
+(74 vars, 453,198 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(4,168 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq s_pblack_ed s_pblack_ed_
+> sq bla1_pblack_ed bla1_pblack_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pbl
+> ack_ed sei1_pblack_ed_sq s_bla1_pblack_ed s_bla1_pblack_ed_sq s_imm1_pblack_e
+> d s_imm1_pblack_ed_sq s_sei1_pblack_ed s_sei1_pblack_ed_sq dest_ed_pct_frnbrn
+>  dest_ed_pct_frnbrn_sq s_pfrnbrn_ed s_pfrnbrn_ed_sq bla1_pfrnbrn_ed bla1_pfrn
+> brn_ed_sq imm1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_
+> sq s_bla1_pfrnbrn_ed s_bla1_pfrnbrn_ed_sq s_imm1_pfrnbrn_ed s_imm1_pfrnbrn_ed
+> _sq s_sei1_pfrnbrn_ed s_sei1_pfrnbrn_ed_sq dest_ed_mean_sei dest_ed_mean_sei_
+> sq s_msei_ed s_msei_ed_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_msei
+> _ed_sq sei1_msei_ed sei1_msei_ed_sq s_bla1_msei_ed s_bla1_msei_ed_sq s_imm1_m
+> sei_ed s_imm1_msei_ed_sq s_sei1_msei_ed s_sei1_msei_ed_sq dist dist_sq s_dist
+>  s_dist_sq bla1_dist bla1_dist_sq imm1_dist imm1_dist_sq sei1_dist sei1_dist_
+> sq s_bla1_dist s_bla1_dist_sq s_imm1_dist s_imm1_dist_sq s_sei1_dist s_sei1_d
+> ist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -7993.5125  
+Iteration 1:   log likelihood = -7941.9467  
+Iteration 2:   log likelihood = -7939.7698  
+Iteration 3:   log likelihood = -7938.8087  
+Iteration 4:   log likelihood = -7938.7668  
+Iteration 5:   log likelihood = -7938.7657  
+Iteration 6:   log likelihood = -7938.7657  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =    449,030
+                                                LR chi2(57)       =    9622.65
+                                                Prob > chi2       =     0.0000
+Log likelihood = -7938.7657                     Pseudo R2         =     0.3774
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |   .1945315   .0320153     6.08   0.000     .1317828    .2572803
+dest_ed~k_sq |  -.0021204   .0004162    -5.09   0.000    -.0029362   -.0013047
+ s_pblack_ed |  -.0011925   .0010528    -1.13   0.257     -.003256     .000871
+s_pblack_e~q |   6.23e-06   .0000142     0.44   0.661    -.0000217    .0000341
+bla1_pblac~d |  -.0010593   .0002491    -4.25   0.000    -.0015476    -.000571
+bla1_pblac~q |    .000015   3.11e-06     4.81   0.000     8.86e-06     .000021
+imm1_pblac~d |  -.0018455   .0005922    -3.12   0.002    -.0030061   -.0006848
+imm1_pblac~q |   .0000225   7.82e-06     2.87   0.004     7.14e-06    .0000378
+sei1_pblac~d |  -.0019364   .0015964    -1.21   0.225    -.0050652    .0011924
+sei1_pblac~q |   .0000251   .0000203     1.24   0.215    -.0000146    .0000649
+s_bla1_pbl~d |   .0000128   8.04e-06     1.59   0.112    -2.99e-06    .0000285
+s_bla1_pbl~q |  -9.64e-08   1.03e-07    -0.94   0.347    -2.97e-07    1.05e-07
+s_imm1_pbl~d |   .0000355   .0000196     1.82   0.069    -2.80e-06    .0000739
+s_imm1_pbl~q |  -2.23e-07   2.64e-07    -0.84   0.399    -7.42e-07    2.95e-07
+s_sei1_pbl~d |   3.51e-06   .0000515     0.07   0.946    -.0000974    .0001044
+s_sei1_pbl~q |   2.09e-08   6.87e-07     0.03   0.976    -1.33e-06    1.37e-06
+dest_ed_pc~n |   .1346282    .115584     1.16   0.244    -.0919121    .3611686
+dest_ed~n_sq |  -.0039151   .0024477    -1.60   0.110    -.0087124    .0008822
+s_pfrnbrn_ed |  -.0056062   .0037911    -1.48   0.139    -.0130367    .0018243
+s_pfrnbrn_~q |   .0001123   .0000779     1.44   0.150    -.0000404     .000265
+bla1_pfrnb~d |  -.0010838   .0009285    -1.17   0.243    -.0029036    .0007361
+bla1_pfrnb~q |   .0000288   .0000197     1.47   0.143    -9.71e-06    .0000673
+imm1_pfrnb~d |  -.0015865   .0019441    -0.82   0.414    -.0053969    .0022238
+imm1_pfrnb~q |   .0000587    .000036     1.63   0.102    -.0000117    .0001292
+sei1_pfrnb~d |  -.0049014   .0060417    -0.81   0.417     -.016743    .0069402
+sei1_pfrnb~q |   .0000641   .0001293     0.50   0.620    -.0001892    .0003175
+s_bla1_pfr~d |   .0000104   .0000301     0.34   0.731    -.0000487    .0000694
+s_bla1_pfr~q |  -3.50e-07   6.26e-07    -0.56   0.576    -1.58e-06    8.78e-07
+s_imm1_pfr~d |   .0001157   .0000638     1.81   0.070    -9.34e-06    .0002407
+s_imm1_pfr~q |  -1.79e-06   1.15e-06    -1.56   0.119    -4.04e-06    4.62e-07
+s_sei1_pfr~d |   .0001649   .0001937     0.85   0.395    -.0002148    .0005446
+s_sei1_pfr~q |  -3.71e-06   4.05e-06    -0.91   0.360    -.0000116    4.23e-06
+dest_ed_me~i |   .0070702   .3111769     0.02   0.982    -.6028253    .6169658
+dest_ed_me~q |   -.008629   .0134999    -0.64   0.523    -.0350883    .0178303
+   s_msei_ed |  -.0177915   .0120332    -1.48   0.139    -.0413761    .0057931
+s_msei_ed_sq |   .0005966   .0005094     1.17   0.241    -.0004017     .001595
+bla1_msei_ed |  -.0024947   .0022759    -1.10   0.273    -.0069554    .0019661
+bla1_msei_~q |   .0001206   .0000996     1.21   0.226    -.0000746    .0003158
+imm1_msei_ed |   .0072871     .00792     0.92   0.358    -.0082359    .0228101
+imm1_msei_~q |  -.0004695   .0003711    -1.27   0.206    -.0011969    .0002579
+sei1_msei_ed |   .0082966   .0143032     0.58   0.562    -.0197371    .0363304
+sei1_msei_~q |   .0002606   .0005578     0.47   0.640    -.0008327    .0013538
+s_bla1_mse~d |   .0001053   .0000845     1.25   0.213    -.0000604    .0002709
+s_bla1_mse~q |  -3.46e-06   3.58e-06    -0.97   0.334    -.0000105    3.55e-06
+s_imm1_mse~d |   .0001714   .0002632     0.65   0.515    -.0003444    .0006873
+s_imm1_mse~q |  -3.81e-06   .0000118    -0.32   0.746    -.0000269    .0000193
+s_sei1_mse~d |   .0010098   .0006077     1.66   0.097    -.0001812    .0022009
+s_sei1_mse~q |  -.0000343   .0000246    -1.40   0.162    -.0000825    .0000138
+        dist |  -.0012051   .0001726    -6.98   0.000    -.0015433   -.0008668
+     dist_sq |   2.13e-08   8.25e-09     2.58   0.010     5.08e-09    3.74e-08
+      s_dist |   5.78e-06   5.73e-06     1.01   0.313    -5.45e-06     .000017
+   s_dist_sq |  -2.63e-10   3.05e-10    -0.86   0.388    -8.60e-10    3.34e-10
+   bla1_dist |   7.64e-06   1.49e-06     5.13   0.000     4.72e-06    .0000106
+bla1_dist_sq |  -1.58e-10   7.28e-11    -2.16   0.030    -3.00e-10   -1.49e-11
+   imm1_dist |   .0000106   3.44e-06     3.09   0.002     3.88e-06    .0000174
+imm1_dist_sq |  -2.44e-10   1.80e-10    -1.35   0.176    -5.98e-10    1.09e-10
+   sei1_dist |  -9.86e-06   9.03e-06    -1.09   0.274    -.0000276    7.83e-06
+sei1_dist_sq |   1.69e-09   4.44e-10     3.80   0.000     8.18e-10    2.56e-09
+ s_bla1_dist |  -1.39e-07   4.90e-08    -2.84   0.005    -2.35e-07   -4.30e-08
+s_bla1_dis~q |   4.94e-12   2.59e-12     1.90   0.057    -1.43e-13    1.00e-11
+ s_imm1_dist |  -1.82e-07   1.14e-07    -1.59   0.111    -4.07e-07    4.22e-08
+s_imm1_dis~q |   9.95e-12   6.37e-12     1.56   0.118    -2.54e-12    2.24e-11
+ s_sei1_dist |   3.10e-07   2.90e-07     1.07   0.285    -2.58e-07    8.78e-07
+s_sei1_dis~q |  -1.13e-11   1.60e-11    -0.70   0.481    -4.28e-11    2.02e-11
+------------------------------------------------------------------------------
+
+. clogit, or
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =    449,030
+                                                LR chi2(57)       =    9622.65
+                                                Prob > chi2       =     0.0000
+Log likelihood = -7938.7657                     Pseudo R2         =     0.3774
+
+------------------------------------------------------------------------------
+      choice | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |   1.214742   .0388903     6.08   0.000      1.14086    1.293408
+dest_ed~k_sq |   .9978818   .0004153    -5.09   0.000     .9970681    .9986962
+ s_pblack_ed |   .9988082   .0010516    -1.13   0.257     .9967493    1.000871
+s_pblack_e~q |   1.000006   .0000142     0.44   0.661     .9999783    1.000034
+bla1_pblac~d |   .9989413   .0002489    -4.25   0.000     .9984536    .9994291
+bla1_pblac~q |   1.000015   3.11e-06     4.81   0.000     1.000009    1.000021
+imm1_pblac~d |   .9981562   .0005911    -3.12   0.002     .9969984    .9993154
+imm1_pblac~q |   1.000022   7.82e-06     2.87   0.004     1.000007    1.000038
+sei1_pblac~d |   .9980655   .0015933    -1.21   0.225     .9949476    1.001193
+sei1_pblac~q |   1.000025   .0000203     1.24   0.215     .9999854    1.000065
+s_bla1_pbl~d |   1.000013   8.04e-06     1.59   0.112      .999997    1.000029
+s_bla1_pbl~q |   .9999999   1.03e-07    -0.94   0.347     .9999997           1
+s_imm1_pbl~d |   1.000036   .0000196     1.82   0.069     .9999972    1.000074
+s_imm1_pbl~q |   .9999998   2.64e-07    -0.84   0.399     .9999993           1
+s_sei1_pbl~d |   1.000004   .0000515     0.07   0.946     .9999026    1.000104
+s_sei1_pbl~q |          1   6.87e-07     0.03   0.976     .9999987    1.000001
+dest_ed_pc~n |   1.144111   .1322409     1.16   0.244     .9121853    1.435005
+dest_ed~n_sq |   .9960926   .0024381    -1.60   0.110     .9913254    1.000883
+s_pfrnbrn_ed |   .9944095   .0037699    -1.48   0.139     .9870479    1.001826
+s_pfrnbrn_~q |   1.000112   .0000779     1.44   0.150     .9999596    1.000265
+bla1_pfrnb~d |   .9989168   .0009275    -1.17   0.243     .9971006    1.000736
+bla1_pfrnb~q |   1.000029   .0000197     1.47   0.143     .9999903    1.000067
+imm1_pfrnb~d |   .9984147    .001941    -0.82   0.414     .9946177    1.002226
+imm1_pfrnb~q |   1.000059    .000036     1.63   0.102     .9999883    1.000129
+sei1_pfrnb~d |   .9951106   .0060122    -0.81   0.417     .9833964    1.006964
+sei1_pfrnb~q |   1.000064   .0001293     0.50   0.620     .9998108    1.000318
+s_bla1_pfr~d |    1.00001   .0000301     0.34   0.731     .9999513    1.000069
+s_bla1_pfr~q |   .9999997   6.26e-07    -0.56   0.576     .9999984    1.000001
+s_imm1_pfr~d |   1.000116   .0000638     1.81   0.070     .9999907    1.000241
+s_imm1_pfr~q |   .9999982   1.15e-06    -1.56   0.119      .999996           1
+s_sei1_pfr~d |   1.000165   .0001937     0.85   0.395     .9997852    1.000545
+s_sei1_pfr~q |   .9999963   4.05e-06    -0.91   0.360     .9999884    1.000004
+dest_ed_me~i |   1.007095   .3133848     0.02   0.982     .5472633    1.853296
+dest_ed_me~q |   .9914081   .0133839    -0.64   0.523     .9655201     1.01799
+   s_msei_ed |   .9823658    .011821    -1.48   0.139     .9594682     1.00581
+s_msei_ed_sq |   1.000597   .0005097     1.17   0.241     .9995983    1.001596
+bla1_msei_ed |   .9975084   .0022703    -1.10   0.273     .9930687    1.001968
+bla1_msei_~q |   1.000121   .0000996     1.21   0.226     .9999254    1.000316
+imm1_msei_ed |   1.007314    .007978     0.92   0.358     .9917979    1.023072
+imm1_msei_~q |   .9995306    .000371    -1.27   0.206     .9988038    1.000258
+sei1_msei_ed |   1.008331   .0144224     0.58   0.562     .9804564    1.036998
+sei1_msei_~q |   1.000261   .0005579     0.47   0.640     .9991677    1.001355
+s_bla1_mse~d |   1.000105   .0000845     1.25   0.213     .9999396    1.000271
+s_bla1_mse~q |   .9999965   3.58e-06    -0.97   0.334     .9999895    1.000004
+s_imm1_mse~d |   1.000171   .0002632     0.65   0.515     .9996556    1.000688
+s_imm1_mse~q |   .9999962   .0000118    -0.32   0.746     .9999731    1.000019
+s_sei1_mse~d |    1.00101   .0006083     1.66   0.097     .9998188    1.002203
+s_sei1_mse~q |   .9999657   .0000246    -1.40   0.162     .9999175    1.000014
+        dist |   .9987956   .0001724    -6.98   0.000     .9984579    .9991335
+     dist_sq |          1   8.25e-09     2.58   0.010            1           1
+      s_dist |   1.000006   5.73e-06     1.01   0.313     .9999945    1.000017
+   s_dist_sq |          1   3.05e-10    -0.86   0.388            1           1
+   bla1_dist |   1.000008   1.49e-06     5.13   0.000     1.000005    1.000011
+bla1_dist_sq |          1   7.28e-11    -2.16   0.030            1           1
+   imm1_dist |   1.000011   3.44e-06     3.09   0.002     1.000004    1.000017
+imm1_dist_sq |          1   1.80e-10    -1.35   0.176            1           1
+   sei1_dist |   .9999901   9.03e-06    -1.09   0.274     .9999724    1.000008
+sei1_dist_sq |          1   4.44e-10     3.80   0.000            1           1
+ s_bla1_dist |   .9999999   4.90e-08    -2.84   0.005     .9999998           1
+s_bla1_dis~q |          1   2.59e-12     1.90   0.057            1           1
+ s_imm1_dist |   .9999998   1.14e-07    -1.59   0.111     .9999996           1
+s_imm1_dis~q |          1   6.37e-12     1.56   0.118            1           1
+ s_sei1_dist |          1   2.90e-07     1.07   0.285     .9999997    1.000001
+s_sei1_dis~q |          1   1.60e-11    -0.70   0.481            1           1
+------------------------------------------------------------------------------
+
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc_example_
+> preds/final-obsv-black-20-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc_example_preds/fina
+> l-obsv-black-20-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc_example_preds/final-obsv-
+> black-20-preds.csv saved
+
+. 
+. * load example data
+. *import delim using "/home/bbellman/census-linking/data/for_models/dc-pred-ex
+> amples.csv", clear
+. *destring dist, replace
+. 
+. * predictions for hypothetical households in real EDs
+. *predict phat
+. 
+. * over-write model data with predictions attached
+. *export delim using "/home/bbellman/census-linking/data/for_models/dc_example
+> _preds/ex-black-20-preds-cats.csv", replace
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *** Black sample, 1920-1930 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_black_30.csv", clear
+(74 vars, 367,166 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(5,413 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq s_pblack_ed s_pblack_ed_
+> sq bla1_pblack_ed bla1_pblack_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pbl
+> ack_ed sei1_pblack_ed_sq s_bla1_pblack_ed s_bla1_pblack_ed_sq s_imm1_pblack_e
+> d s_imm1_pblack_ed_sq s_sei1_pblack_ed s_sei1_pblack_ed_sq dest_ed_pct_frnbrn
+>  dest_ed_pct_frnbrn_sq s_pfrnbrn_ed s_pfrnbrn_ed_sq bla1_pfrnbrn_ed bla1_pfrn
+> brn_ed_sq imm1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_
+> sq s_bla1_pfrnbrn_ed s_bla1_pfrnbrn_ed_sq s_imm1_pfrnbrn_ed s_imm1_pfrnbrn_ed
+> _sq s_sei1_pfrnbrn_ed s_sei1_pfrnbrn_ed_sq dest_ed_mean_sei dest_ed_mean_sei_
+> sq s_msei_ed s_msei_ed_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_msei
+> _ed_sq sei1_msei_ed sei1_msei_ed_sq s_bla1_msei_ed s_bla1_msei_ed_sq s_imm1_m
+> sei_ed s_imm1_msei_ed_sq s_sei1_msei_ed s_sei1_msei_ed_sq dist dist_sq s_dist
+>  s_dist_sq bla1_dist bla1_dist_sq imm1_dist imm1_dist_sq sei1_dist sei1_dist_
+> sq s_bla1_dist s_bla1_dist_sq s_imm1_dist s_imm1_dist_sq s_sei1_dist s_sei1_d
+> ist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -9126.5628  
+Iteration 1:   log likelihood =  -9091.994  
+Iteration 2:   log likelihood = -9091.1978  
+Iteration 3:   log likelihood =  -9091.151  
+Iteration 4:   log likelihood = -9091.1455  
+Iteration 5:   log likelihood = -9091.1455  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =    361,753
+                                                LR chi2(57)       =   10161.22
+                                                Prob > chi2       =     0.0000
+Log likelihood = -9091.1455                     Pseudo R2         =     0.3585
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |   .0929069   .0288542     3.22   0.001     .0363537    .1494601
+dest_ed~k_sq |  -.0011086    .000312    -3.55   0.000    -.0017201   -.0004971
+ s_pblack_ed |     .00131   .0009929     1.32   0.187    -.0006361    .0032561
+s_pblack_e~q |  -9.17e-07   .0000107    -0.09   0.932    -.0000219    .0000201
+bla1_pblac~d |  -.0000379    .000225    -0.17   0.866    -.0004789    .0004031
+bla1_pblac~q |   4.42e-06   2.43e-06     1.82   0.069    -3.43e-07    9.17e-06
+imm1_pblac~d |   .0009381   .0006135     1.53   0.126    -.0002644    .0021405
+imm1_pblac~q |  -1.45e-06   6.65e-06    -0.22   0.827    -.0000145    .0000116
+sei1_pblac~d |  -.0008241    .001664    -0.50   0.620    -.0040856    .0024373
+sei1_pblac~q |   .0000213   .0000175     1.22   0.222    -.0000129    .0000556
+s_bla1_pbl~d |  -.0000111   7.69e-06    -1.45   0.148    -.0000262    3.95e-06
+s_bla1_pbl~q |   4.73e-08   8.23e-08     0.57   0.566    -1.14e-07    2.08e-07
+s_imm1_pbl~d |    -.00006   .0000233    -2.58   0.010    -.0001057   -.0000144
+s_imm1_pbl~q |   3.33e-07   2.58e-07     1.29   0.197    -1.72e-07    8.39e-07
+s_sei1_pbl~d |  -.0000304   .0000535    -0.57   0.570    -.0001353    .0000745
+s_sei1_pbl~q |  -1.04e-07   5.67e-07    -0.18   0.854    -1.22e-06    1.01e-06
+dest_ed_pc~n |  -.0195006   .0982301    -0.20   0.843     -.212028    .1730268
+dest_ed~n_sq |  -.0013771   .0020922    -0.66   0.510    -.0054777    .0027236
+s_pfrnbrn_ed |   .0051404   .0038357     1.34   0.180    -.0023774    .0126581
+s_pfrnbrn_~q |  -.0000853   .0000811    -1.05   0.293    -.0002443    .0000738
+bla1_pfrnb~d |   .0006387   .0008932     0.72   0.475    -.0011119    .0023893
+bla1_pfrnb~q |  -7.61e-07   .0000205    -0.04   0.970     -.000041    .0000395
+imm1_pfrnb~d |   .0029157   .0018399     1.58   0.113    -.0006904    .0065218
+imm1_pfrnb~q |  -8.59e-06   .0000359    -0.24   0.811    -.0000789    .0000617
+sei1_pfrnb~d |    -.00526   .0051657    -1.02   0.309    -.0153846    .0048645
+sei1_pfrnb~q |   .0001082   .0001004     1.08   0.282    -.0000887     .000305
+s_bla1_pfr~d |  -.0000253   .0000324    -0.78   0.435    -.0000889    .0000382
+s_bla1_pfr~q |   1.71e-07   7.44e-07     0.23   0.818    -1.29e-06    1.63e-06
+s_imm1_pfr~d |  -.0001064   .0000819    -1.30   0.194     -.000267    .0000542
+s_imm1_pfr~q |   1.78e-06   1.61e-06     1.10   0.270    -1.38e-06    4.94e-06
+s_sei1_pfr~d |   -.000216   .0001941    -1.11   0.266    -.0005964    .0001643
+s_sei1_pfr~q |   3.99e-06   3.81e-06     1.05   0.295    -3.48e-06    .0000115
+dest_ed_me~i |   .1289257   .2679544     0.48   0.630    -.3962553    .6541068
+dest_ed_me~q |  -.0172341   .0106242    -1.62   0.105    -.0380571    .0035889
+   s_msei_ed |  -.0061953   .0088698    -0.70   0.485    -.0235797    .0111892
+s_msei_ed_sq |    .000535   .0003326     1.61   0.108    -.0001169    .0011869
+bla1_msei_ed |  -.0016778   .0022017    -0.76   0.446    -.0059931    .0026375
+bla1_msei_~q |    .000106   .0000883     1.20   0.230    -.0000671    .0002792
+imm1_msei_ed |   -.004108   .0058501    -0.70   0.483     -.015574     .007358
+imm1_msei_~q |   .0002752    .000236     1.17   0.244    -.0001873    .0007376
+sei1_msei_ed |   .0143005   .0155635     0.92   0.358    -.0162034    .0448044
+sei1_msei_~q |   .0002606   .0006014     0.43   0.665    -.0009182    .0014394
+s_bla1_mse~d |   .0000839   .0000675     1.24   0.214    -.0000483    .0002162
+s_bla1_mse~q |  -4.43e-06   2.54e-06    -1.74   0.081    -9.41e-06    5.47e-07
+s_imm1_mse~d |   .0002789   .0002409     1.16   0.247    -.0001933     .000751
+s_imm1_mse~q |   -.000018   9.97e-06    -1.81   0.071    -.0000376    1.53e-06
+s_sei1_mse~d |   .0002693    .000582     0.46   0.644    -.0008714      .00141
+s_sei1_mse~q |   -.000021   .0000226    -0.93   0.353    -.0000652    .0000233
+        dist |  -.0013331    .000139    -9.59   0.000    -.0016055   -.0010608
+     dist_sq |   3.14e-08   6.35e-09     4.95   0.000     1.89e-08    4.38e-08
+      s_dist |   5.85e-06   4.71e-06     1.24   0.214    -3.38e-06    .0000151
+   s_dist_sq |  -5.65e-11   2.11e-10    -0.27   0.789    -4.70e-10    3.57e-10
+   bla1_dist |   7.05e-06   1.08e-06     6.51   0.000     4.93e-06    9.17e-06
+bla1_dist_sq |  -1.54e-10   5.34e-11    -2.88   0.004    -2.58e-10   -4.91e-11
+   imm1_dist |   .0000162   3.07e-06     5.27   0.000     .0000101    .0000222
+imm1_dist_sq |  -4.19e-10   1.61e-10    -2.60   0.009    -7.35e-10   -1.03e-10
+   sei1_dist |   .0000127   8.42e-06     1.51   0.132    -3.83e-06    .0000292
+sei1_dist_sq |   4.37e-10   4.00e-10     1.09   0.275    -3.48e-10    1.22e-09
+ s_bla1_dist |  -3.79e-08   3.60e-08    -1.05   0.292    -1.08e-07    3.27e-08
+s_bla1_dis~q |   6.46e-13   1.69e-12     0.38   0.703    -2.67e-12    3.97e-12
+ s_imm1_dist |  -1.23e-07   1.25e-07    -0.99   0.323    -3.69e-07    1.22e-07
+s_imm1_dis~q |   6.47e-13   7.10e-12     0.09   0.927    -1.33e-11    1.46e-11
+ s_sei1_dist |  -5.88e-08   2.64e-07    -0.22   0.824    -5.77e-07    4.59e-07
+s_sei1_dis~q |  -2.65e-12   1.22e-11    -0.22   0.828    -2.66e-11    2.13e-11
+------------------------------------------------------------------------------
+
+. clogit, or
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =    361,753
+                                                LR chi2(57)       =   10161.22
+                                                Prob > chi2       =     0.0000
+Log likelihood = -9091.1455                     Pseudo R2         =     0.3585
+
+------------------------------------------------------------------------------
+      choice | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |    1.09736   .0316634     3.22   0.001     1.037023    1.161207
+dest_ed~k_sq |    .998892   .0003116    -3.55   0.000     .9982814     .999503
+ s_pblack_ed |   1.001311   .0009942     1.32   0.187     .9993641    1.003261
+s_pblack_e~q |   .9999991   .0000107    -0.09   0.932     .9999781     1.00002
+bla1_pblac~d |   .9999621    .000225    -0.17   0.866     .9995212    1.000403
+bla1_pblac~q |   1.000004   2.43e-06     1.82   0.069     .9999997    1.000009
+imm1_pblac~d |   1.000939   .0006141     1.53   0.126     .9997357    1.002143
+imm1_pblac~q |   .9999986   6.65e-06    -0.22   0.827     .9999855    1.000012
+sei1_pblac~d |   .9991762   .0016627    -0.50   0.620     .9959228     1.00244
+sei1_pblac~q |   1.000021   .0000175     1.22   0.222     .9999871    1.000056
+s_bla1_pbl~d |   .9999889   7.69e-06    -1.45   0.148     .9999738    1.000004
+s_bla1_pbl~q |          1   8.23e-08     0.57   0.566     .9999999           1
+s_imm1_pbl~d |     .99994   .0000233    -2.58   0.010     .9998943    .9999856
+s_imm1_pbl~q |          1   2.58e-07     1.29   0.197     .9999998    1.000001
+s_sei1_pbl~d |   .9999696   .0000535    -0.57   0.570     .9998647    1.000074
+s_sei1_pbl~q |   .9999999   5.67e-07    -0.18   0.854     .9999988    1.000001
+dest_ed_pc~n |   .9806883   .0963331    -0.20   0.843     .8089421    1.188898
+dest_ed~n_sq |   .9986239   .0020893    -0.66   0.510     .9945372    1.002727
+s_pfrnbrn_ed |   1.005154   .0038554     1.34   0.180     .9976254    1.012739
+s_pfrnbrn_~q |   .9999147   .0000811    -1.05   0.293     .9997557    1.000074
+bla1_pfrnb~d |   1.000639   .0008937     0.72   0.475     .9988888    1.002392
+bla1_pfrnb~q |   .9999992   .0000205    -0.04   0.970      .999959    1.000039
+imm1_pfrnb~d |    1.00292   .0018452     1.58   0.113     .9993099    1.006543
+imm1_pfrnb~q |   .9999914   .0000359    -0.24   0.811     .9999211    1.000062
+sei1_pfrnb~d |   .9947538   .0051386    -1.02   0.309     .9847332    1.004876
+sei1_pfrnb~q |   1.000108   .0001005     1.08   0.282     .9999113    1.000305
+s_bla1_pfr~d |   .9999747   .0000324    -0.78   0.435     .9999111    1.000038
+s_bla1_pfr~q |          1   7.44e-07     0.23   0.818     .9999987    1.000002
+s_imm1_pfr~d |   .9998936   .0000819    -1.30   0.194     .9997331    1.000054
+s_imm1_pfr~q |   1.000002   1.61e-06     1.10   0.270     .9999986    1.000005
+s_sei1_pfr~d |    .999784    .000194    -1.11   0.266     .9994037    1.000164
+s_sei1_pfr~q |   1.000004   3.81e-06     1.05   0.295     .9999965    1.000011
+dest_ed_me~i |   1.137606   .3048265     0.48   0.630     .6728349    1.923424
+dest_ed_me~q |   .9829136   .0104426    -1.62   0.105      .962658    1.003595
+   s_msei_ed |   .9938239    .008815    -0.70   0.485     .9766961    1.011252
+s_msei_ed_sq |   1.000535   .0003328     1.61   0.108     .9998831    1.001188
+bla1_msei_ed |   .9983236   .0021981    -0.76   0.446     .9940248    1.002641
+bla1_msei_~q |   1.000106   .0000883     1.20   0.230     .9999329    1.000279
+imm1_msei_ed |   .9959004   .0058261    -0.70   0.483     .9845466    1.007385
+imm1_msei_~q |   1.000275    .000236     1.17   0.244     .9998127    1.000738
+sei1_msei_ed |   1.014403   .0157877     0.92   0.358     .9839272    1.045823
+sei1_msei_~q |   1.000261   .0006016     0.43   0.665     .9990822     1.00144
+s_bla1_mse~d |   1.000084   .0000675     1.24   0.214     .9999517    1.000216
+s_bla1_mse~q |   .9999956   2.54e-06    -1.74   0.081     .9999906    1.000001
+s_imm1_mse~d |   1.000279   .0002409     1.16   0.247     .9998068    1.000751
+s_imm1_mse~q |    .999982   9.97e-06    -1.81   0.071     .9999624    1.000002
+s_sei1_mse~d |   1.000269   .0005822     0.46   0.644     .9991289    1.001411
+s_sei1_mse~q |    .999979   .0000226    -0.93   0.353     .9999348    1.000023
+        dist |   .9986678   .0001388    -9.59   0.000     .9983958    .9989398
+     dist_sq |          1   6.35e-09     4.95   0.000            1           1
+      s_dist |   1.000006   4.71e-06     1.24   0.214     .9999966    1.000015
+   s_dist_sq |          1   2.11e-10    -0.27   0.789            1           1
+   bla1_dist |   1.000007   1.08e-06     6.51   0.000     1.000005    1.000009
+bla1_dist_sq |          1   5.34e-11    -2.88   0.004            1           1
+   imm1_dist |   1.000016   3.07e-06     5.27   0.000      1.00001    1.000022
+imm1_dist_sq |          1   1.61e-10    -2.60   0.009            1           1
+   sei1_dist |   1.000013   8.42e-06     1.51   0.132     .9999962    1.000029
+sei1_dist_sq |          1   4.00e-10     1.09   0.275            1           1
+ s_bla1_dist |          1   3.60e-08    -1.05   0.292     .9999999           1
+s_bla1_dis~q |          1   1.69e-12     0.38   0.703            1           1
+ s_imm1_dist |   .9999999   1.25e-07    -0.99   0.323     .9999996           1
+s_imm1_dis~q |          1   7.10e-12     0.09   0.927            1           1
+ s_sei1_dist |   .9999999   2.64e-07    -0.22   0.824     .9999994           1
+s_sei1_dis~q |          1   1.22e-11    -0.22   0.828            1           1
+------------------------------------------------------------------------------
+
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc_example_
+> preds/final-obsv-black-30-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc_example_preds/fina
+> l-obsv-black-30-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc_example_preds/final-obsv-
+> black-30-preds.csv saved
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. *** Black sample, 1930-1940 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_black_40.csv", clear
+(74 vars, 1,165,923 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(2,275 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq s_pblack_ed s_pblack_ed_
+> sq bla1_pblack_ed bla1_pblack_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pbl
+> ack_ed sei1_pblack_ed_sq s_bla1_pblack_ed s_bla1_pblack_ed_sq s_imm1_pblack_e
+> d s_imm1_pblack_ed_sq s_sei1_pblack_ed s_sei1_pblack_ed_sq dest_ed_pct_frnbrn
+>  dest_ed_pct_frnbrn_sq s_pfrnbrn_ed s_pfrnbrn_ed_sq bla1_pfrnbrn_ed bla1_pfrn
+> brn_ed_sq imm1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_
+> sq s_bla1_pfrnbrn_ed s_bla1_pfrnbrn_ed_sq s_imm1_pfrnbrn_ed s_imm1_pfrnbrn_ed
+> _sq s_sei1_pfrnbrn_ed s_sei1_pfrnbrn_ed_sq dest_ed_mean_sei dest_ed_mean_sei_
+> sq s_msei_ed s_msei_ed_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_msei
+> _ed_sq sei1_msei_ed sei1_msei_ed_sq s_bla1_msei_ed s_bla1_msei_ed_sq s_imm1_m
+> sei_ed s_imm1_msei_ed_sq s_sei1_msei_ed s_sei1_msei_ed_sq dist dist_sq s_dist
+>  s_dist_sq bla1_dist bla1_dist_sq imm1_dist imm1_dist_sq sei1_dist sei1_dist_
+> sq s_bla1_dist s_bla1_dist_sq s_imm1_dist s_imm1_dist_sq s_sei1_dist s_sei1_d
+> ist_sq, group(serial1)
+
+Iteration 0:   log likelihood = -16137.699  
+Iteration 1:   log likelihood =     -16059  
+Iteration 2:   log likelihood = -16057.896  
+Iteration 3:   log likelihood = -16057.893  
+Iteration 4:   log likelihood = -16057.893  
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  1,163,648
+                                                LR chi2(57)       =   27807.28
+                                                Prob > chi2       =     0.0000
+Log likelihood = -16057.893                     Pseudo R2         =     0.4640
+
+------------------------------------------------------------------------------
+      choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |   .1214631   .0241902     5.02   0.000     .0740513     .168875
+dest_ed~k_sq |  -.0013538   .0002463    -5.50   0.000    -.0018366    -.000871
+ s_pblack_ed |   .0016912   .0009711     1.74   0.082    -.0002121    .0035946
+s_pblack_e~q |  -.0000107   9.66e-06    -1.11   0.266    -.0000297    8.19e-06
+bla1_pblac~d |  -.0004672   .0001934    -2.42   0.016    -.0008462   -.0000882
+bla1_pblac~q |   8.45e-06   1.96e-06     4.32   0.000     4.61e-06    .0000123
+imm1_pblac~d |  -.0000807    .000555    -0.15   0.884    -.0011684     .001007
+imm1_pblac~q |   8.81e-06   5.90e-06     1.49   0.135    -2.75e-06    .0000204
+sei1_pblac~d |  -.0008565   .0012134    -0.71   0.480    -.0032347    .0015216
+sei1_pblac~q |   .0000192   .0000121     1.59   0.112    -4.46e-06    .0000429
+s_bla1_pbl~d |  -.0000171   7.50e-06    -2.28   0.023    -.0000318   -2.41e-06
+s_bla1_pbl~q |   1.29e-07   7.49e-08     1.72   0.086    -1.81e-08    2.75e-07
+s_imm1_pbl~d |  -.0000235   .0000238    -0.99   0.324    -.0000702    .0000232
+s_imm1_pbl~q |   1.53e-07   2.49e-07     0.61   0.539    -3.35e-07    6.42e-07
+s_sei1_pbl~d |  -.0000586   .0000452    -1.30   0.195    -.0001471    .0000299
+s_sei1_pbl~q |   4.68e-07   4.41e-07     1.06   0.289    -3.96e-07    1.33e-06
+dest_ed_pc~n |  -.1010697   .1110697    -0.91   0.363    -.3187622    .1166228
+dest_ed~n_sq |   .0004742   .0029819     0.16   0.874    -.0053703    .0063187
+s_pfrnbrn_ed |  -.0022468   .0043954    -0.51   0.609    -.0108616     .006368
+s_pfrnbrn_~q |   .0000596   .0001172     0.51   0.611    -.0001701    .0002893
+bla1_pfrnb~d |   .0011804   .0009168     1.29   0.198    -.0006164    .0029773
+bla1_pfrnb~q |  -.0000223   .0000256    -0.87   0.385    -.0000724    .0000279
+imm1_pfrnb~d |   .0069096   .0025287     2.73   0.006     .0019535    .0118658
+imm1_pfrnb~q |  -.0000977   .0000628    -1.56   0.120    -.0002207    .0000253
+sei1_pfrnb~d |  -.0041273   .0055786    -0.74   0.459    -.0150611    .0068066
+sei1_pfrnb~q |   .0001064   .0001537     0.69   0.489    -.0001949    .0004077
+s_bla1_pfr~d |   .0000104    .000035     0.30   0.766    -.0000582    .0000791
+s_bla1_pfr~q |  -2.94e-07   9.80e-07    -0.30   0.764    -2.22e-06    1.63e-06
+s_imm1_pfr~d |   .0000352   .0001066     0.33   0.741    -.0001737    .0002441
+s_imm1_pfr~q |   1.88e-08   2.58e-06     0.01   0.994    -5.04e-06    5.08e-06
+s_sei1_pfr~d |   .0001333   .0002087     0.64   0.523    -.0002757    .0005423
+s_sei1_pfr~q |  -4.94e-06   5.92e-06    -0.83   0.404    -.0000165    6.66e-06
+dest_ed_me~i |   -.336253   .1582891    -2.12   0.034     -.646494   -.0260121
+dest_ed_me~q |   .0019505   .0051088     0.38   0.703    -.0080625    .0119635
+   s_msei_ed |   .0009203   .0062138     0.15   0.882    -.0112586    .0130992
+s_msei_ed_sq |    .000127   .0001957     0.65   0.516    -.0002565    .0005105
+bla1_msei_ed |   .0011917    .001336     0.89   0.372    -.0014268    .0038103
+bla1_msei_~q |   2.48e-06   .0000444     0.06   0.955    -.0000845    .0000894
+imm1_msei_ed |   .0061446   .0046177     1.33   0.183     -.002906    .0151952
+imm1_msei_~q |  -.0001313   .0001631    -0.81   0.421     -.000451    .0001884
+sei1_msei_ed |   .0202674   .0065052     3.12   0.002     .0075175    .0330173
+sei1_msei_~q |   -.000169   .0001783    -0.95   0.343    -.0005185    .0001804
+s_bla1_mse~d |   .0000264   .0000472     0.56   0.576    -.0000661    .0001189
+s_bla1_mse~q |  -1.62e-06   1.48e-06    -1.09   0.274    -4.52e-06    1.28e-06
+s_imm1_mse~d |   .0000292   .0001856     0.16   0.875    -.0003345    .0003929
+s_imm1_mse~q |  -4.79e-06   6.41e-06    -0.75   0.455    -.0000173    7.77e-06
+s_sei1_mse~d |   .0000115   .0002767     0.04   0.967    -.0005308    .0005537
+s_sei1_mse~q |  -3.85e-06   8.36e-06    -0.46   0.645    -.0000202    .0000125
+        dist |   -.001091    .000137    -7.96   0.000    -.0013596   -.0008225
+     dist_sq |   1.14e-08   6.19e-09     1.85   0.065    -6.96e-10    2.36e-08
+      s_dist |   4.97e-06   5.00e-06     0.99   0.320    -4.83e-06    .0000148
+   s_dist_sq |   9.83e-12   2.35e-10     0.04   0.967    -4.51e-10    4.71e-10
+   bla1_dist |   2.93e-06   1.11e-06     2.63   0.008     7.47e-07    5.11e-06
+bla1_dist_sq |   9.54e-11   5.81e-11     1.64   0.101    -1.86e-11    2.09e-10
+   imm1_dist |   3.99e-06   3.32e-06     1.20   0.229    -2.51e-06    .0000105
+imm1_dist_sq |   2.70e-10   1.61e-10     1.67   0.094    -4.59e-11    5.85e-10
+   sei1_dist |  -9.57e-06   7.09e-06    -1.35   0.177    -.0000235    4.32e-06
+sei1_dist_sq |   1.49e-09   3.07e-10     4.84   0.000     8.85e-10    2.09e-09
+ s_bla1_dist |  -9.64e-08   4.07e-08    -2.37   0.018    -1.76e-07   -1.66e-08
+s_bla1_dis~q |   1.64e-12   2.20e-12     0.75   0.456    -2.68e-12    5.96e-12
+ s_imm1_dist |   6.75e-08   1.29e-07     0.52   0.600    -1.85e-07    3.20e-07
+s_imm1_dis~q |  -5.56e-12   6.12e-12    -0.91   0.364    -1.76e-11    6.44e-12
+ s_sei1_dist |  -1.33e-08   2.34e-07    -0.06   0.955    -4.71e-07    4.45e-07
+s_sei1_dis~q |  -4.85e-12   1.04e-11    -0.47   0.640    -2.52e-11    1.55e-11
+------------------------------------------------------------------------------
+
+. clogit, or
+
+Conditional (fixed-effects) logistic regression
+
+                                                Number of obs     =  1,163,648
+                                                LR chi2(57)       =   27807.28
+                                                Prob > chi2       =     0.0000
+Log likelihood = -16057.893                     Pseudo R2         =     0.4640
+
+------------------------------------------------------------------------------
+      choice | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+dest_ed_pc~k |   1.129148   .0273143     5.02   0.000     1.076862    1.183972
+dest_ed~k_sq |   .9986471    .000246    -5.50   0.000     .9981651    .9991294
+ s_pblack_ed |   1.001693   .0009727     1.74   0.082     .9997879    1.003601
+s_pblack_e~q |   .9999893   9.66e-06    -1.11   0.266     .9999703    1.000008
+bla1_pblac~d |   .9995329   .0001933    -2.42   0.016     .9991542    .9999118
+bla1_pblac~q |   1.000008   1.96e-06     4.32   0.000     1.000005    1.000012
+imm1_pblac~d |   .9999193   .0005549    -0.15   0.884     .9988323    1.001008
+imm1_pblac~q |   1.000009   5.90e-06     1.49   0.135     .9999972     1.00002
+sei1_pblac~d |   .9991438   .0012123    -0.71   0.480     .9967705    1.001523
+sei1_pblac~q |   1.000019   .0000121     1.59   0.112     .9999955    1.000043
+s_bla1_pbl~d |   .9999829   7.50e-06    -2.28   0.023     .9999682    .9999976
+s_bla1_pbl~q |          1   7.49e-08     1.72   0.086            1           1
+s_imm1_pbl~d |   .9999765   .0000238    -0.99   0.324     .9999298    1.000023
+s_imm1_pbl~q |          1   2.49e-07     0.61   0.539     .9999997    1.000001
+s_sei1_pbl~d |   .9999414   .0000452    -1.30   0.195     .9998529     1.00003
+s_sei1_pbl~q |          1   4.41e-07     1.06   0.289     .9999996    1.000001
+dest_ed_pc~n |     .90387   .1003925    -0.91   0.363     .7270484    1.123696
+dest_ed~n_sq |   1.000474   .0029834     0.16   0.874     .9946441    1.006339
+s_pfrnbrn_ed |   .9977557   .0043855    -0.51   0.609     .9891972    1.006388
+s_pfrnbrn_~q |    1.00006   .0001172     0.51   0.611       .99983    1.000289
+bla1_pfrnb~d |   1.001181   .0009179     1.29   0.198     .9993838    1.002982
+bla1_pfrnb~q |   .9999777   .0000256    -0.87   0.385     .9999276    1.000028
+imm1_pfrnb~d |   1.006934   .0025462     2.73   0.006     1.001955    1.011936
+imm1_pfrnb~q |   .9999024   .0000628    -1.56   0.120     .9997794    1.000025
+sei1_pfrnb~d |   .9958812   .0055556    -0.74   0.459     .9850517     1.00683
+sei1_pfrnb~q |   1.000106   .0001537     0.69   0.489     .9998051    1.000408
+s_bla1_pfr~d |    1.00001    .000035     0.30   0.766     .9999418    1.000079
+s_bla1_pfr~q |   .9999997   9.80e-07    -0.30   0.764     .9999978    1.000002
+s_imm1_pfr~d |   1.000035   .0001066     0.33   0.741     .9998264    1.000244
+s_imm1_pfr~q |          1   2.58e-06     0.01   0.994      .999995    1.000005
+s_sei1_pfr~d |   1.000133   .0002087     0.64   0.523     .9997243    1.000542
+s_sei1_pfr~q |   .9999951   5.92e-06    -0.83   0.404     .9999835    1.000007
+dest_ed_me~i |   .7144423   .1130884    -2.12   0.034     .5238793    .9743233
+dest_ed_me~q |   1.001952   .0051187     0.38   0.703     .9919699    1.012035
+   s_msei_ed |   1.000921   .0062196     0.15   0.882     .9888045    1.013185
+s_msei_ed_sq |   1.000127   .0001957     0.65   0.516     .9997435    1.000511
+bla1_msei_ed |   1.001192   .0013376     0.89   0.372     .9985742    1.003818
+bla1_msei_~q |   1.000002   .0000444     0.06   0.955     .9999155    1.000089
+imm1_msei_ed |   1.006164   .0046462     1.33   0.183     .9970982    1.015311
+imm1_msei_~q |   .9998687   .0001631    -0.81   0.421     .9995491    1.000188
+sei1_msei_ed |   1.020474   .0066383     3.12   0.002     1.007546    1.033568
+sei1_msei_~q |    .999831   .0001783    -0.95   0.343     .9994817     1.00018
+s_bla1_mse~d |   1.000026   .0000472     0.56   0.576     .9999339    1.000119
+s_bla1_mse~q |   .9999984   1.48e-06    -1.09   0.274     .9999955    1.000001
+s_imm1_mse~d |   1.000029   .0001856     0.16   0.875     .9996656    1.000393
+s_imm1_mse~q |   .9999952   6.41e-06    -0.75   0.455     .9999827    1.000008
+s_sei1_mse~d |   1.000011   .0002767     0.04   0.967     .9994694    1.000554
+s_sei1_mse~q |   .9999962   8.36e-06    -0.46   0.645     .9999798    1.000013
+        dist |   .9989095   .0001369    -7.96   0.000     .9986413    .9991778
+     dist_sq |          1   6.19e-09     1.85   0.065            1           1
+      s_dist |   1.000005   5.00e-06     0.99   0.320     .9999952    1.000015
+   s_dist_sq |          1   2.35e-10     0.04   0.967            1           1
+   bla1_dist |   1.000003   1.11e-06     2.63   0.008     1.000001    1.000005
+bla1_dist_sq |          1   5.81e-11     1.64   0.101            1           1
+   imm1_dist |   1.000004   3.32e-06     1.20   0.229     .9999975     1.00001
+imm1_dist_sq |          1   1.61e-10     1.67   0.094            1           1
+   sei1_dist |   .9999904   7.09e-06    -1.35   0.177     .9999765    1.000004
+sei1_dist_sq |          1   3.07e-10     4.84   0.000            1           1
+ s_bla1_dist |   .9999999   4.07e-08    -2.37   0.018     .9999998           1
+s_bla1_dis~q |          1   2.20e-12     0.75   0.456            1           1
+ s_imm1_dist |          1   1.29e-07     0.52   0.600     .9999998           1
+s_imm1_dis~q |          1   6.12e-12    -0.91   0.364            1           1
+ s_sei1_dist |          1   2.34e-07    -0.06   0.955     .9999995           1
+s_sei1_dis~q |          1   1.04e-11    -0.47   0.640            1           1
+------------------------------------------------------------------------------
+
+. 
+. * generate predicted probabilities of household destination choices
+. predict phat
+(option pc1 assumed; probability of success given one success within group)
+
+. 
+. * save data with predictions
+. export delim using "/home/bbellman/census-linking/data/for_models/dc_example_
+> preds/final-obsv-black-40-preds.csv", replace
+(note: file /home/bbellman/census-linking/data/for_models/dc_example_preds/fina
+> l-obsv-black-40-preds.csv not found)
+file /home/bbellman/census-linking/data/for_models/dc_example_preds/final-obsv-
+> black-40-preds.csv saved
+
+. 
+. 
+. 
+. 
+. *************
+. 
+. 
+. *** White immigrant sample, 1910-1920 movers
+. 
+. * load observed data
+. import delim using "/home/bbellman/census-linking/data/for_models/final-phl_d
+> iscrete_choice_wimm_20.csv", clear
+(74 vars, 4,022,841 obs)
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(43,935 observations deleted)
+
+. 
+. * run conditional logit model
+. clogit choice dest_ed_pct_black dest_ed_pct_black_sq s_pblack_ed s_pblack_ed_
+> sq bla1_pblack_ed bla1_pblack_ed_sq imm1_pblack_ed imm1_pblack_ed_sq sei1_pbl
+> ack_ed sei1_pblack_ed_sq s_bla1_pblack_ed s_bla1_pblack_ed_sq s_imm1_pblack_e
+> d s_imm1_pblack_ed_sq s_sei1_pblack_ed s_sei1_pblack_ed_sq dest_ed_pct_frnbrn
+>  dest_ed_pct_frnbrn_sq s_pfrnbrn_ed s_pfrnbrn_ed_sq bla1_pfrnbrn_ed bla1_pfrn
+> brn_ed_sq imm1_pfrnbrn_ed imm1_pfrnbrn_ed_sq sei1_pfrnbrn_ed sei1_pfrnbrn_ed_
+> sq s_bla1_pfrnbrn_ed s_bla1_pfrnbrn_ed_sq s_imm1_pfrnbrn_ed s_imm1_pfrnbrn_ed
+> _sq s_sei1_pfrnbrn_ed s_sei1_pfrnbrn_ed_sq dest_ed_mean_sei dest_ed_mean_sei_
+> sq s_msei_ed s_msei_ed_sq bla1_msei_ed bla1_msei_ed_sq imm1_msei_ed imm1_msei
+> _ed_sq sei1_msei_ed sei1_msei_ed_sq s_bla1_msei_ed s_bla1_msei_ed_sq s_imm1_m
+> sei_ed s_imm1_msei_ed_sq s_sei1_msei_ed s_sei1_msei_ed_sq dist dist_sq s_dist
+>  s_dist_sq bla1_dist bla1_dist_sq imm1_dist imm1_dist_sq sei1_dist sei1_dist_

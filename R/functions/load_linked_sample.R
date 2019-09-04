@@ -17,14 +17,16 @@ load_microdata <- function(t, formatted = T){
                                   TRUE ~ "Other"),
              uniqueid = paste(serial, pernum, year, sep = "_"),
              year = as.numeric(year),
-             age = as.numeric(age))
+             age = as.numeric(age),
+             ed = as.character(enumdist))
   } else {
     import(here("data", "micro", paste0("Phl", t, "_nofmt.csv")), fill = T) %>% 
       mutate(race_grp = case_when(race == "200" ~ "Black",
                                   race == "210" ~ "Black",
                                   race == "100" ~ "White",
                                   TRUE ~ "Other"),
-             uniqueid = paste(serial, pernum, year, sep = "_"))
+             uniqueid = paste(serial, pernum, year, sep = "_"),
+             ed = as.character(ed))
   }
 }
 

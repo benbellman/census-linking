@@ -159,29 +159,70 @@ choices_full <- choices_full %>%
     dest_ed_pct_frnbrn_sq = dest_ed_pct_frnbrn * dest_ed_pct_frnbrn,
     dest_ed_mean_sei_sq = dest_ed_mean_sei * dest_ed_mean_sei,
     dist_sq = dist * dist,
-    # create all interactions
-    # lags in time1
+    # create all interactions from time 1
+    # ED % black
     bla1_pblack_ed = ed_pct_black1 * dest_ed_pct_black,
     bla1_pblack_ed_sq = ed_pct_black1 * dest_ed_pct_black_sq,
+    bla1_pfrnbrn_ed = ed_pct_black1 * dest_ed_pct_frnbrn,
+    bla1_pfrnbrn_ed_sq = ed_pct_black1 * dest_ed_pct_frnbrn_sq,
+    bla1_msei_ed = ed_pct_black1 * dest_ed_mean_sei,
+    bla1_msei_ed_sq = ed_pct_black1 * dest_ed_mean_sei_sq,
     bla1_dist = ed_pct_black1 * dist,
     bla1_dist_sq = ed_pct_black1 * dist_sq,
+    # ED % immigrant
+    imm1_pblack_ed = ed_pct_frnbrn1 * dest_ed_pct_black,
+    imm1_pblack_ed_sq = ed_pct_frnbrn1 * dest_ed_pct_black_sq,
     imm1_pfrnbrn_ed = ed_pct_frnbrn1 * dest_ed_pct_frnbrn,
     imm1_pfrnbrn_ed_sq = ed_pct_frnbrn1 * dest_ed_pct_frnbrn_sq,
+    imm1_msei_ed = ed_pct_frnbrn1 * dest_ed_mean_sei,
+    imm1_msei_ed_sq = ed_pct_frnbrn1 * dest_ed_mean_sei_sq,
     imm1_dist = ed_pct_frnbrn1 * dist,
     imm1_dist_sq = ed_pct_frnbrn1 * dist_sq,
+    # ED mean SEI
+    sei1_pblack_ed = ed_mean_sei1 * dest_ed_pct_black,
+    sei1_pblack_ed_sq = ed_mean_sei1 * dest_ed_pct_black_sq,
+    sei1_pfrnbrn_ed = ed_mean_sei1 * dest_ed_pct_frnbrn,
+    sei1_pfrnbrn_ed_sq = ed_mean_sei1 * dest_ed_pct_frnbrn_sq,
     sei1_msei_ed = ed_mean_sei1 * dest_ed_mean_sei,
     sei1_msei_ed_sq = ed_mean_sei1 * dest_ed_mean_sei_sq,
     sei1_dist = ed_mean_sei1 * dist,
     sei1_dist_sq = ed_mean_sei1 * dist_sq,
-    # sei
-    sei_pblack_ed = hh_max_sei1 * dest_ed_pct_black,
-    sei_pblack_ed_sq = hh_max_sei1 * dest_ed_pct_black_sq,
-    sei_pfrnbrn_ed = hh_max_sei1 * dest_ed_pct_frnbrn,
-    sei_pfrnbrn_ed_sq = hh_max_sei1 * dest_ed_pct_frnbrn_sq,
-    sei_msei_ed = hh_max_sei1 * dest_ed_mean_sei,
-    sei_msei_ed_sq = hh_max_sei1 * dest_ed_mean_sei_sq,
-    sei_dist = hh_max_sei1 * dist,
-    sei_dist_sq = hh_max_sei1 * dist_sq
+    # Individual SEI
+    s_pblack_ed = hh_max_sei1 * dest_ed_pct_black,
+    s_pblack_ed_sq = hh_max_sei1 * dest_ed_pct_black_sq,
+    s_pfrnbrn_ed = hh_max_sei1 * dest_ed_pct_frnbrn,
+    s_pfrnbrn_ed_sq = hh_max_sei1 * dest_ed_pct_frnbrn_sq,
+    s_msei_ed = hh_max_sei1 * dest_ed_mean_sei,
+    s_msei_ed_sq = hh_max_sei1 * dest_ed_mean_sei_sq,
+    s_dist = hh_max_sei1 * dist,
+    s_dist_sq = hh_max_sei1 * dist_sq,
+    # Individual SEI with all time 1 ED interactions
+    s_bla1_pblack_ed = hh_max_sei1 * bla1_pblack_ed,
+    s_bla1_pblack_ed_sq = hh_max_sei1 * bla1_pblack_ed_sq,
+    s_bla1_pfrnbrn_ed = hh_max_sei1 * bla1_pfrnbrn_ed,
+    s_bla1_pfrnbrn_ed_sq = hh_max_sei1 * bla1_pfrnbrn_ed_sq,
+    s_bla1_msei_ed = hh_max_sei1 * bla1_msei_ed,
+    s_bla1_msei_ed_sq = hh_max_sei1 * bla1_msei_ed_sq,
+    s_bla1_dist = hh_max_sei1 * bla1_dist,
+    s_bla1_dist_sq  = hh_max_sei1 * bla1_dist_sq,
+    # ED % immigrant
+    s_imm1_pblack_ed = hh_max_sei1 * imm1_pblack_ed,
+    s_imm1_pblack_ed_sq = hh_max_sei1 * imm1_pblack_ed_sq,
+    s_imm1_pfrnbrn_ed = hh_max_sei1 * imm1_pfrnbrn_ed,
+    s_imm1_pfrnbrn_ed_sq = hh_max_sei1 * imm1_pfrnbrn_ed_sq,
+    s_imm1_msei_ed = hh_max_sei1 * imm1_msei_ed,
+    s_imm1_msei_ed_sq = hh_max_sei1 * imm1_msei_ed_sq,
+    s_imm1_dist = hh_max_sei1 * imm1_dist,
+    s_imm1_dist_sq = hh_max_sei1 * imm1_dist_sq,
+    # ED mean SEI
+    s_sei1_pblack_ed = hh_max_sei1 * sei1_pblack_ed,
+    s_sei1_pblack_ed_sq = hh_max_sei1 * sei1_pblack_ed_sq,
+    s_sei1_pfrnbrn_ed = hh_max_sei1 * sei1_pfrnbrn_ed,
+    s_sei1_pfrnbrn_ed_sq = hh_max_sei1 * sei1_pfrnbrn_ed_sq,
+    s_sei1_msei_ed = hh_max_sei1 * sei1_msei_ed,
+    s_sei1_msei_ed_sq = hh_max_sei1 * sei1_msei_ed_sq,
+    s_sei1_dist = hh_max_sei1 * sei1_dist,
+    s_sei1_dist_sq = hh_max_sei1 * sei1_dist_sq
   ) %>% 
   # keep only variables used in models
   select(
@@ -190,17 +231,30 @@ choices_full <- choices_full %>%
     # original source variables for all model terms
     choice, hh_max_sei1, ed_pct_black1, ed_pct_frnbrn1, ed_mean_sei1,
     dest_ed_pct_black, dest_ed_pct_frnbrn, dest_ed_mean_sei, dist,
-    # all linear interactions
-    bla1_pblack_ed, bla1_dist,
-    imm1_pfrnbrn_ed, imm1_dist,
-    sei1_msei_ed, sei1_dist,
-    sei_pblack_ed, sei_pfrnbrn_ed, sei_msei_ed, sei_dist,
-    # all quadratic interactions
+    # quadratic terms
     dest_ed_pct_black_sq, dest_ed_pct_frnbrn_sq, dest_ed_mean_sei_sq, dist_sq,
-    bla1_pblack_ed_sq, bla1_dist_sq,
-    imm1_pfrnbrn_ed_sq, imm1_dist_sq,
-    sei1_msei_ed_sq, sei1_dist_sq,
-    sei_pblack_ed_sq, sei_pfrnbrn_ed_sq, sei_msei_ed_sq, sei_dist_sq
+    # all interactions
+    bla1_pblack_ed, bla1_pblack_ed_sq, bla1_pfrnbrn_ed, bla1_pfrnbrn_ed_sq,
+    bla1_msei_ed, bla1_msei_ed_sq, bla1_dist, bla1_dist_sq,
+    # 
+    imm1_pblack_ed, imm1_pblack_ed_sq, imm1_pfrnbrn_ed, imm1_pfrnbrn_ed_sq,
+    imm1_msei_ed, imm1_msei_ed_sq, imm1_dist, imm1_dist_sq,
+    # 
+    sei1_pblack_ed, sei1_pblack_ed_sq, sei1_pfrnbrn_ed, sei1_pfrnbrn_ed_sq,
+    sei1_msei_ed, sei1_msei_ed_sq, sei1_dist, sei1_dist_sq,
+    # Individual SEI
+    s_pblack_ed, s_pblack_ed_sq, s_pfrnbrn_ed, s_pfrnbrn_ed_sq,
+    s_msei_ed, s_msei_ed_sq, s_dist, s_dist_sq,
+    # Individual SEI with all time 1 ED interactions
+    s_bla1_pblack_ed, s_bla1_pblack_ed_sq, s_bla1_pfrnbrn_ed, s_bla1_pfrnbrn_ed_sq,
+    s_bla1_msei_ed, s_bla1_msei_ed_sq, s_bla1_dist, s_bla1_dist_sq,
+    # ED % immigrant
+    s_imm1_pblack_ed, s_imm1_pblack_ed_sq, s_imm1_pfrnbrn_ed, s_imm1_pfrnbrn_ed_sq,
+    s_imm1_msei_ed, s_imm1_msei_ed_sq, s_imm1_dist, s_imm1_dist_sq,
+    # ED mean SEI
+    s_sei1_pblack_ed, s_sei1_pblack_ed_sq, s_sei1_pfrnbrn_ed, s_sei1_pfrnbrn_ed_sq,
+    s_sei1_msei_ed, s_sei1_msei_ed_sq, s_sei1_dist, s_sei1_dist_sq
+    
   )
 
 
@@ -208,15 +262,15 @@ choices_full <- choices_full %>%
 # export choice data by race category
 choices_full %>% 
   filter(race_cat == "Black") %>% 
-  write_csv(here("data", "for_models", "phl_discrete_choice_black_40.csv"))
+  write_csv(here("data", "for_models", "final-phl_discrete_choice_black_40.csv"))
 
 choices_full %>% 
   filter(race_cat == "White Imm") %>% 
-  write_csv(here("data", "for_models", "phl_discrete_choice_wimm_40.csv"))
+  write_csv(here("data", "for_models", "final-phl_discrete_choice_wimm_40.csv"))
 
 choices_full %>% 
   filter(race_cat == "White NB") %>% 
-  write_csv(here("data", "for_models", "phl_discrete_choice_wnb_40.csv"))
+  write_csv(here("data", "for_models", "final-phl_discrete_choice_wnb_40.csv"))
 
 
 

@@ -33,15 +33,23 @@ hh_cols <- c("serial", "year", "age", "sex", "race", "nativity", "mtongue", "sch
 #### Load Data ####
 
 # create a combined linked sample with specified vars
-linked <- here("data", "linked") %>% 
-  list.files(full.names = T) %>% 
-  map(import) %>% 
-  map(select, ind_cols) %>% 
-  map(mutate, ed1 = as.character(ed1),
-      ed2 = as.character(ed2)) %>%
-  bind_rows() %>% 
-  # generate dummy vars for household position in time 1
-  mutate(not_hhh1 = if_else(relate1 == 101, 0, 1),
+#linked <- here("data", "linked") %>% 
+#  list.files(full.names = T) %>% 
+#  map(import) %>% 
+#  map(select, ind_cols) %>% 
+#  map(mutate, ed1 = as.character(ed1),
+#      ed2 = as.character(ed2)) %>%
+#  bind_rows() %>% 
+
+## just running for 20-30 to keep data small for now
+linked <- import(here("data", "linked", "linked_20_30")) %>% 
+  # keep individual variables
+  select(ind_cols) %>% 
+  # set EDs to character vector
+  mutate(ed1 = as.character(ed1),
+         ed2 = as.character(ed2),
+         # create dummy variables for calculations
+         not_hhh1 = if_else(relate1 == 101, 0, 1),
          boarder1 = if_else(between(relate1, 1200, 1206), 1, 0),
          employee1 = if_else(between(relate1, 1210, 1217), 1, 0),
          inst1 = if_else(relate1 %in% c(1301, 1223, 1221, 1222), 1, 0),
@@ -52,7 +60,8 @@ linked <- here("data", "linked") %>%
          other = if_else(race_grp1 == "Other" | race_grp2 == "Other", 1, 0))
 
 # select and aggregate household level variables
-hh <- c(10, 20, 30, 40) %>% 
+#hh <- c(10, 20, 30, 40) %>% 
+hh <- c(20, 30) %>% 
   map(load_microdata, formatted = F) %>% 
   map(select, hh_cols) %>% 
   bind_rows() %>% 
@@ -67,7 +76,8 @@ hh <- c(10, 20, 30, 40) %>%
   ungroup()
 
 # load and aggregate data to ED level
-ed <- c(10, 20, 30, 40) %>% 
+#ed <- c(10, 20, 30, 40) %>% 
+ed <- c(20, 30) %>% 
   map(aggregate_microdata, ed) %>% 
   map(mutate, ed = as.character(ed)) %>% 
   bind_rows()
@@ -77,31 +87,31 @@ names(ed)[-(1:2)] <- paste0("ed_", names(ed)[-(1:2)])
 #### Combine Data ####
 
 # generate T1/T2 specific files for merging
-hh1 <- filter(hh, year != 1940)
-names(hh1) <- paste0(names(hh1), "1")
+#hh1 <- filter(hh, year != 1940)
+#names(hh1) <- paste0(names(hh1), "1")
 
-hh2 <- filter(hh, year != 1910)
-names(hh2) <- paste0(names(hh2), "2")
+#hh2 <- filter(hh, year != 1910)
+#names(hh2) <- paste0(names(hh2), "2")
 
-ed1 <- filter(ed, year != 1940)
-names(ed1) <- paste0(names(ed1), "1")
+#ed1 <- filter(ed, year != 1940)
+#names(ed1) <- paste0(names(ed1), "1")
 
-ed2 <- filter(ed, year != 1910)
-names(ed2) <- paste0("dest_", names(ed2))
+#ed2 <- filter(ed, year != 1910)
+#names(ed2) <- paste0("dest_", names(ed2))
 # split into a list
-dest <- split(ed2, ed2$dest_year)
+#dest <- split(ed2, ed2$dest_year)
 
 ## execute all merges
 
 # create sets of data by census in a list
-origin <- linked %>% 
-  left_join(hh1) %>% 
+#origin <- linked %>% 
+#  left_join(hh1) %>% 
   #left_join(hh2) %>% 
-  left_join(ed1) %>% 
-  split(.$year2)
+#  left_join(ed1) %>% 
+#  split(.$year2)
 
 # combine each year with possible destination EDs for that year
-combined <- map2(origin, dest, all_row_combos)
+#combined <- map2(origin, dest, all_row_combos)
 
 #combined <- list()
 #for(a in 1:3){

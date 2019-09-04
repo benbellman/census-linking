@@ -38,5 +38,8 @@ rsconnect/
 # Ignore the data folder
 data/
 
+# Ignore the figures folder
+figures/
+
 # Ignore mac source files
 .DS_Store

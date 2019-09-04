@@ -8,6 +8,7 @@ library(tmap)
 library(ggmap)
 library(mclust)
 library(tidyr)
+library(tigris)
 
 for(a in list.files(here("R", "functions"), full.names = T)){
   source(a)
@@ -27,10 +28,10 @@ ed2_data <- aggregate_microdata(t2, ed) %>% rename(ED = ed) %>% mutate(ED = as.c
 
 # load 1910 and 1920 ED polyogons
 ed1_poly <- st_read(here("data", "shertzer_eds", paste0("Philadelphia_19", t1, ".shp"))) %>% 
-  st_transform(4326) %>% 
+  st_transform(26918) %>% 
   mutate(ED = as.character(ED))
 ed2_poly <- st_read(here("data", "shertzer_eds", paste0("Philadelphia_19", t2, ".shp"))) %>% 
-  st_transform(4326) %>% 
+  st_transform(26918) %>% 
   mutate(ED = as.character(ED))
 
 # merge together
@@ -132,6 +133,11 @@ ed2_cent <- ed2_cent %>%
   as_tibble() %>% 
   select(-geometry) %>% 
   rename(ed2 = ED)
+
+# Load Philly boundary
+phl_boundary <- counties(42) %>% 
+  st_as_sf() %>% 
+  filter(NAME == "Philadelphia")
 
 
 
@@ -256,7 +262,7 @@ flow_map_by_race <- function(race_flows_coord, ed){
   
   phl_border <- st_union(ed1)
   
-  points_plot <- st_as_sf(ed_flow, coords = c("lon2", "lat2"), crs = 4326)
+  points_plot <- st_as_sf(ed_flow, coords = c("lon2", "lat2"), crs = 26918)
   
   #  ggmap(ed_base) +
   ggplot() +
@@ -281,11 +287,20 @@ flow_map_by_race <- function(race_flows_coord, ed){
 }
 
 
-flowmap2 <- flow_map_by_race(race_flows_coord, ed = 182)
+phl_boundary <- counties(42) %>% 
+  st_as_sf() %>% 
+  st_transform(crs = 26918) %>% 
+  filter(NAME == "Philadelphia")
 
-flowmap2
+
+flow_map_by_race(race_flows_coord, 119, ed2, phl_boundary)
+
+
 
 flow_map_by_race(race_flows_coord, ed = 258) +
   ggsave("/Users/benjaminbellman/Desktop/desparation_plot5.pdf")
 
 # 119, 729, 1252, 1838, 258, 182
+
+animate_eds <- c()
+
