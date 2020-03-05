@@ -29,7 +29,8 @@ full_data <- import(here("data", "training_all_vars_v3.csv")) %>%
   mutate(mimatch = if_else(mi1 == mi2, 1, 0),
          mimatch = if_else(is.na(mimatch), 0, mimatch),
          ydiff_1 = if_else(ydiff == 1, 1, 0),
-         ydiff_2 = if_else(ydiff == 2, 1, 0)) %>% 
+         ydiff_2 = if_else(ydiff == 2, 1, 0),
+         ydiff_3 = if_else(ydiff == 3, 1, 0)) %>% 
   as_tibble()
 
 # save outcome as factor
@@ -46,7 +47,10 @@ vars <- c("match", # variable to predict
           "f_start", "l_start", "f_end", "l_end",
           "jw_frst", "jw_last", 
           "fsoundex", "lsoundex", "mimatch",
-          "hits", "hits2", "ydiff_1", "ydiff_2")
+          "hits", "hits2", 
+          "ydiff_1", "ydiff_2", "ydiff_3")
+
+
 
 # retrain model on full training set, name as glm2
 full_training <- full_data[vars]
@@ -78,7 +82,8 @@ potential <- import(here("data", "linking_comparisons", paste0("potential-matche
   mutate(mimatch = if_else(mi1 == mi2, 1, 0),
          mimatch = if_else(is.na(mimatch), 0, mimatch),
          ydiff_1 = if_else(ydiff == 1, 1, 0),
-         ydiff_2 = if_else(ydiff == 2, 1, 0)) %>% 
+         ydiff_2 = if_else(ydiff == 2, 1, 0),
+         ydiff_3 = if_else(ydiff == 3, 1, 0)) %>% 
   as_tibble()
 
 # automated math predictiong using trained probit coefficients ---
@@ -89,7 +94,7 @@ blocked <- potential %>%
   split(.$serial2)
 
 
-for(b1 in c(0.5, 0.9)){   # make sure to add back 0.1, 0.2, 0.3!
+for(b1 in c(0.1, 0.3, 0.5, 0.9)){   # make sure to add back 0.1, 0.2, 0.3!
   for(b2 in c(1.25, 1.5, 1.75)){
 
     #setup parallel backend to use many processors

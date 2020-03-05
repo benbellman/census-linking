@@ -1,7 +1,7 @@
 library(dplyr)
 library(mclust)
 library(purrr)
-
+library(circular)
 
 # function to return cluster of input df
 get_clusters <- function(df, G = NULL){
@@ -15,23 +15,22 @@ get_clusters <- function(df, G = NULL){
   }
 } 
 
+# function to calculate an angle in degrees from due North
+move_angle <- function(X1, X2, Y1, Y2){
+  #atan((test$X2 - test$X1) / (test$Y2 - test$Y1)) * 180 / pi
+  circular(atan2(y = Y2 - Y1, x = X2 - X1))
+}
 
-# custom function for selecting linked households and classifying moves
-# extra arguments are passed to filter to limit households being clustered
-get_flows <- function(links, ...){
-  # collect category info from data
-  y <- unique(links$year1)
-  r <- unique(links$race_cat)
-  c1 <- unique(links$custom1)
-  c2 <- unique(links$custom2)
-  
+
+# function for defining residential flows through clusting on start/end points and direction
+
+get_flows <- function(links){
   # filter data and attach cluster IDs
   filter(links,
-         is.na(x1) == F,
-         is.na(x2) == F,
-         is.na(y1) == F,
-         is.na(y2) == F#,
-         #...
+         is.na(X1) == F,
+         is.na(X2) == F,
+         is.na(Y1) == F,
+         is.na(Y2) == F
   ) -> d
   
   # if there are no valid rows to cluster, return NA
@@ -40,36 +39,31 @@ get_flows <- function(links, ...){
   }
   
   # calculate origin and destination x-y clusters for slice of data
-  select(d, x1, y1) %>% 
-    get_clusters() %>% 
-    rename(cluster1 = cluster) -> ids1
+  select(d, X1, X2, Y1, Y2) %>% 
+    mutate(angle = move_angle(X1, X2, Y1, Y2)) %>% 
+    get_clusters() -> ids
   
-  select(d, x2, y2) %>% 
-    get_clusters() %>% 
-    rename(cluster2 = cluster) -> ids2
-  
-  # collapse moves into data describing clusters, return result
-  d %>% 
-    left_join(ids1) %>% 
-    left_join(ids2) %>% 
-    select(serial1, cluster1, cluster2, x1, x2, y1, y2, sei1, ownershp1) %>% 
-    unique() %>% 
-    group_by(cluster1, cluster2) %>% 
+  # summarize coordinates as flows
+  left_join(d, ids) %>% 
+    group_by(cluster) %>% 
     summarise(
       n = n(),
-      mean_sei = mean(sei1),
+      sei_mean = mean(sei1),
+      sei_sd = stats::sd(sei1),
+      sei_var = stats::var(sei1),
       pct_rent = mean((ownershp1/10)-1)*100,
-      x1 = mean(x1),
-      x2 = mean(x2),
-      y1 = mean(y1),
-      y2 = mean(y2)
+      X1 = mean(X1),
+      X1_sd = stats::sd(X1),
+      X2 = mean(X2),
+      X2_sd = stats::sd(X2),
+      Y1 = mean(Y1),
+      Y1_sd = stats::sd(Y1),
+      Y2 = mean(Y2),
+      Y2_sd = stats::sd(Y2)
     ) %>% 
     ungroup() %>% 
-    mutate(sei_grp = case_when(mean_sei < 20 ~ "Under 20", mean_sei >= 20 & mean_sei < 40 ~ "20 to 40", mean_sei >= 40 ~ "40 and up"),
-           sei_grp = factor(sei_grp, levels = c("Under 20", "20 to 40", "40 and up")),
-           year1 = y,
-           race_cat = r,
-           custom1 = c1,
-           custom2 = c2) %>% 
-    filter(n > 5)
+    mutate(
+      sei_grp = case_when(sei_mean < 20 ~ "Under 20", sei_mean >= 20 & sei_mean < 40 ~ "20 to 40", sei_mean >= 40 ~ "40 and up"),
+      sei_grp = factor(sei_grp, levels = c("Under 20", "20 to 40", "40 and up"))
+    )
 }

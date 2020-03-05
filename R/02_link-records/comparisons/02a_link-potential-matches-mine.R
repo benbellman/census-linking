@@ -29,7 +29,8 @@ full_data <- import(here("data", "training_all_vars_v3.csv")) %>%
   mutate(mimatch = if_else(mi1 == mi2, 1, 0),
          mimatch = if_else(is.na(mimatch), 0, mimatch),
          ydiff_1 = if_else(ydiff == 1, 1, 0),
-         ydiff_2 = if_else(ydiff == 2, 1, 0)) %>% 
+         ydiff_2 = if_else(ydiff == 2, 1, 0),
+         ydiff_3 = if_else(ydiff == 3, 1, 0)) %>% 
   as_tibble()
 
 # save outcome as factor
@@ -45,7 +46,8 @@ vars <- c("match", # variable to predict
           "f_start", "l_start", "f_end", "l_end",
           "jw_frst", "jw_last", 
           "fsoundex", "lsoundex", "mimatch",
-          "hits", "hits2", "ydiff_1", "ydiff_2",
+          "hits", "hits2", 
+          "ydiff_1", "ydiff_2", "ydiff_3",
           # indicators based on household comparisons
           "n_match", "pct_match", "hh_size_diff", "avg_jw_frst")
 
@@ -78,7 +80,8 @@ potential <- import(here("data", "linking_comparisons", paste0("potential-matche
   mutate(mimatch = if_else(mi1 == mi2, 1, 0),
          mimatch = if_else(is.na(mimatch), 0, mimatch),
          ydiff_1 = if_else(ydiff == 1, 1, 0),
-         ydiff_2 = if_else(ydiff == 2, 1, 0)) %>% 
+         ydiff_2 = if_else(ydiff == 2, 1, 0),
+         ydiff_3 = if_else(ydiff == 3, 1, 0)) %>% 
   # add "exact_mult" variable because it isn't there for some reason
   group_by(serial2) %>% 
   mutate(exact_mult = if_else(sum(exact) > 1, 1, 0)) %>% 
@@ -90,7 +93,7 @@ blocked <- potential %>%
   #filter(serial2 %in% unique(full1020$serial2)[1:100]) %>% 
   split(.$serial2) 
 
-for(b1 in c(0.5, 0.9)){
+for(b1 in c(0.1, 0.3, 0.5, 0.9)){
   for(b2 in c(1.25, 1.5, 1.75)){
     
     #setup parallel backend to use many processors
