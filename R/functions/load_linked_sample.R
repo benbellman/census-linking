@@ -36,10 +36,10 @@ load_linked_sample <- function(t1, t2){
     # crosswalk
     import(here("data", "crosswalks", paste0("crosswalk_", t1, "_", t2, ".csv"))),
     # time 1, drop hidden vars and add "1" tag
-    load_microdata(t1, formatted = F) %>% select_at(vars(-starts_with("us19")), funs(paste0(., "1")))
+    load_microdata(t1, formatted = F) %>% select_at(vars(-starts_with("us19")), list(~ paste0(., "1")))
   # load time 2 and join
   ) %>% inner_join(
     # drop hidden vars and add "2" tag
-    load_microdata(t2, formatted = F) %>% select_at(vars(-starts_with("us19")), funs(paste0(., "2")))
+    load_microdata(t2, formatted = F) %>% select_at(vars(-starts_with("us19")), list(~ paste0(., "2")))
   )
 }

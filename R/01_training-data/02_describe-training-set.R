@@ -1,14 +1,16 @@
 library(tidyverse)
 library(here)
 
+source(here("R", "functions", "load_linked_sample.R"))
+
 # load pre-preprocessed data
 #full_data <- read_csv(here("data", "training_all_vars_v1.csv"))
-training <- read.csv(here("data", "training_all_vars_v1.csv"), stringsAsFactors = F) %>% 
+training <- read.csv(here("data", "training_all_vars_v3.csv"), stringsAsFactors = F) %>% 
   as_tibble()
 
 # load full philly files, and keep records of people in training households
 hold <- list()
-files <- c("Phl20.csv", "Phl30.csv", "Phl40.csv")
+files <- c("micro/Phl20.csv", "micro/Phl30.csv", "micro/Phl40.csv")
 for(a in 1:3){
   hold[[a]] <- here("data", files[a]) %>% 
     read.csv(stringsAsFactors = F) %>% 
@@ -46,10 +48,46 @@ full$age <- recode(full$age,
                     `112 (112+ in the 1980 internal data)` = "112",
                     `Less than 1 year old` = "0") %>% as.numeric()
 
-# tabulate match status with demographic variables
+# load random 30,000 sample from 1930 for comparison
+samp_ids <- here("data", "linking_comparisons", "comparison_sample.csv") %>% 
+  import() %>% 
+  .$uniqueid2
+
+samp <- load_microdata(30, formatted = F) %>% select_at(vars(-starts_with("us19")), list(~ paste0(., "2"))) %>% 
+  filter(uniqueid2 %in% samp_ids) %>% 
+  mutate(method = "Original\nSample")
+
+# calculate new variable for race
+samp <- samp %>%
+  mutate(
+    race = case_when(
+      race2 < 200 ~ "White",
+      race2 == 200 ~ "Black",
+      TRUE ~ "Other"
+    )
+  )
+
+
+
+
+
+
+#######
+# tabulate match status with race
+table(full$race)
+table(full$race) / 10.11
+
 table(full$match, full$race)
-table(full$match, full$sex)
-table(full$match, full$race_sex)
+
+table(samp$race)
+table(samp$race) / 300
+
+
+# look at age across groups
+full %>% 
+  group_by(race, match) %>% 
+  summarise(mean_age = mean(age))
+
 
 ggplot(full) +
   stat_bin(aes(x = age, fill = factor(match)), 
@@ -58,7 +96,9 @@ ggplot(full) +
   facet_grid(sex ~ race)
 
 
+race <- select(full, race, serial) %>% 
+  rename(serial2 = serial)
 
-
+full_test <- left_join(full_test, race)
 
 

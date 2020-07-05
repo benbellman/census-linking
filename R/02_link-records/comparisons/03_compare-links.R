@@ -64,6 +64,8 @@ train_b <- full_train[, vars_b]
 train_f <- full_train[, vars_f]
 
 full_test <- filter(full_data, case %in% full_train$case == F)
+# flip this comment to make only black cases
+#full_test <- filter(full_test, race == "Black")
 test_b <- full_test[, vars_b]
 test_f <- full_test[, vars_f]
 
@@ -103,11 +105,18 @@ for(a in 1:9){
   params$n_feig[a] <- nrow(import(here("data", "linking_comparisons", "crosswalks", paste0("feigenbaum_crosswalk-", b1, "-", b2, ".csv"))))
   params$n_bell[a] <- nrow(import(here("data", "linking_comparisons", "crosswalks", paste0("mine_crosswalk-", b1, "-", b2, ".csv"))))
   
-  # classify matches in leftover set of test data with hyper params
+  
+# classify matches in leftover set of test data with hyper params
   feig <- define_matches(b1, b2, full_test, vars_f, model_f)
   feig$true_match <- full_test$match
   bell <- define_matches(b1, b2, full_test, vars_b, model_b)
   bell$true_match <- full_test$match
+  
+  # count matches from crosswalk
+  params$n_feig[a] <- nrow(pull(feig, ))
+  params$n_bell[a] <- nrow(import(here("data", "linking_comparisons", "crosswalks", paste0("mine_crosswalk-", b1, "-", b2, ".csv"))))
+  
+  
   
   # calculate TPR and PPV for each model
   params$tpr_feig[a] <- get_tpr(feig)
@@ -117,7 +126,7 @@ for(a in 1:9){
 }
 
 params %>% 
-  export("~/Documents/Computer Backup/Dissertation/Chapter - Linkage/ml_results_feb9_20.csv", row.names = F)
+  export("~/Documents/Computer Backup/Dissertation/Chapter - Linkage/ml_black_results_apr24_20.csv", row.names = F)
 
 # visualize overall effects of each 
 #params <- 
@@ -400,6 +409,10 @@ wrap_plots(race, home, bpl, marst) +
 
 
 
+f_01_125 <- here("data", "linking_comparisons", "crosswalks", "feigenbaum_crosswalk-0.1-1.25.csv") %>% 
+  import() %>% 
+  inner_join(load_microdata(20, formatted = F) %>% select_at(vars(-starts_with("us19")), funs(paste0(., "1")))) %>% 
+  inner_join(load_microdata(30, formatted = F) %>% select_at(vars(-starts_with("us19")), funs(paste0(., "2"))))
 
 
 
@@ -429,6 +442,31 @@ ggplot() +
   geom_density(data = m_01_125, aes(x = age2), col = "green") +
   geom_density(data = m_02_150, aes(x = age2), col = "blue") +
   geom_density(data = m_03_175, aes(x = age2), col = "red")
+
+
+
+#####
+
+# looking at improvement household info provides black households
+table(f_05_175$race_grp2)
+table(m_05_175$race_grp2)
+# in the strictest case, my method only matches three more than feigenbaum's
+table(f_01_125$race_grp2)
+table(m_01_125$race_grp2)
+# in the least strict case, my method matches 8 fewer cases
+
+# looking at accuracy/efficiency of these cases
+bl_f_05_175 <- filter(f_05_175, race_grp2 == "Black")
+bl_f_01_125 <- filter(f_01_125, race_grp2 == "Black")
+bl_m_05_175 <- filter(f_05_175, race_grp2 == "Black")
+bl_m_01_125 <- filter(f_01_125, race_grp2 == "Black")
+
+
+get_tpr(bl_f_05_175)
+get_tpr(bl_f_01_125)
+get_tpr(bl_m_05_175)
+get_tpr(bl_m_01_125)
+
 
 
 
